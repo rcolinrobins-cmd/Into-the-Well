@@ -1,0 +1,545 @@
+/* =========================================================
+   INTO THE WELL COLLECTIVE — BASE STYLES & COMPONENTS
+   Built on tokens.css. Mobile-first, semantic HTML, no framework.
+   ========================================================= */
+
+/* ---------- Reset ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+html, body {
+  /* The off-canvas mobile nav sits just outside the viewport (translateX)
+     until opened; without this, some browsers still count it toward the
+     page's scrollable area and add a phantom horizontal scrollbar. */
+  overflow-x: hidden;
+}
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: var(--lh-normal);
+  color: var(--color-charcoal);
+  background: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+h1, h2, h3, h4, p, figure { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; cursor: pointer; }
+
+/* Visible, high-contrast focus ring for keyboard users (a11y) */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard/screen-reader users */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--color-charcoal);
+  color: var(--color-white);
+  padding: var(--space-3) var(--space-5);
+  z-index: 1000;
+  border-radius: 0 0 var(--radius-sm) 0;
+}
+.skip-link:focus {
+  left: 0;
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-tight);
+  color: var(--color-charcoal);
+}
+h1 { font-size: var(--fs-2xl); }
+h2 { font-size: var(--fs-xl); }
+h3 { font-size: var(--fs-lg); }
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  /* terracotta-dk, not terracotta: the lighter accent fails AA (4.5:1) for
+     text at this size on both cream and blush backgrounds — see design-system.md */
+  color: var(--color-terracotta-dk);
+}
+.lead { font-size: var(--fs-md); line-height: var(--lh-snug); color: var(--color-charcoal-soft); }
+.text-muted { color: var(--color-charcoal-soft); }
+
+/* ---------- Layout ---------- */
+.container {
+  max-width: var(--content-max);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+.container--narrow { max-width: var(--content-narrow); }
+.section { padding-block: var(--space-8); }
+.section--alt { background: var(--color-cream-deep); }
+.section-head { max-width: 640px; margin-bottom: var(--space-6); }
+.section-head--center { margin-inline: auto; text-align: center; }
+.stack { display: flex; flex-direction: column; gap: var(--space-5); }
+.stack--tight { gap: var(--space-2); }
+
+.grid {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: 1fr;
+}
+/* Prevent grid items with intrinsically-sized content (e.g. aspect-ratio
+   image placeholders) from forcing their column wider than its fair
+   share — the classic grid/flex "min-width:auto" overflow bug. */
+.grid > * {
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 900px) {
+  .grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .grid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-pill);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-base);
+  text-decoration: none;
+  border: 2px solid transparent;
+  transition: background-color var(--duration-base) var(--ease-standard),
+              color var(--duration-base) var(--ease-standard),
+              border-color var(--duration-base) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard);
+  min-height: 44px; /* touch target */
+}
+.btn:active { transform: translateY(1px); }
+.btn--primary {
+  background: var(--color-terracotta);
+  color: var(--color-white);
+}
+.btn--primary:hover { background: var(--color-terracotta-dk); }
+.btn--secondary {
+  background: transparent;
+  border-color: var(--color-charcoal);
+  color: var(--color-charcoal);
+}
+.btn--secondary:hover { background: var(--color-charcoal); color: var(--color-white); }
+.btn--on-dark {
+  background: var(--color-white);
+  color: var(--color-terracotta-dk);
+}
+.btn--on-dark:hover { background: var(--color-cream-deep); }
+/* 40px rather than the 44px default: still clearly "secondary" next to primary
+   buttons, but comfortable to tap on a phone (this site is mobile-first —
+   most of these sit inside repeating class/event cards a thumb will hit often). */
+.btn--sm { padding: var(--space-2) var(--space-5); font-size: var(--fs-sm); min-height: 40px; }
+.btn--block { width: 100%; }
+
+/* ---------- Site header / nav ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250, 246, 240, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border);
+}
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: var(--space-3);
+}
+.nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  min-width: 0; /* allow brand text to truncate instead of forcing overflow */
+}
+.nav__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: var(--color-sage-pale);
+  color: var(--color-sage-dk);
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.02em;
+}
+.nav__brand-text {
+  font-family: var(--font-display);
+  font-weight: var(--fw-semibold);
+  font-size: clamp(1rem, 4vw, var(--fs-lg));
+  color: var(--color-charcoal);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.nav__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+}
+.nav__toggle svg { width: 26px; height: 26px; }
+@media (min-width: 960px) {
+  .nav__toggle { display: none; }
+}
+.nav__menu {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(88vw, 380px);
+  height: 100vh;
+  background: var(--color-white);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-7) var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  transform: translateX(100%);
+  transition: transform var(--duration-base) var(--ease-standard);
+  overflow-y: auto;
+}
+.nav__menu.is-open { transform: translateX(0); }
+.nav__menu a {
+  display: block;
+  padding: var(--space-3) 0;
+  text-decoration: none;
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-md);
+  border-bottom: 1px solid var(--color-border);
+}
+.nav__menu a[aria-current="page"] { color: var(--color-terracotta-dk); }
+.nav__close { align-self: flex-end; }
+.nav__scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(46, 42, 38, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease-standard);
+  z-index: 90;
+}
+.nav__scrim.is-open { opacity: 1; pointer-events: auto; }
+
+@media (min-width: 960px) {
+  .nav__menu {
+    position: static;
+    width: auto;
+    height: auto;
+    box-shadow: none;
+    padding: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-5);
+    transform: none;
+    overflow: visible;
+  }
+  .nav__brand { flex-shrink: 0; }
+  .nav__menu a {
+    padding: var(--space-2) 0;
+    border-bottom: none;
+    font-size: var(--fs-base);
+    position: relative;
+  }
+  .nav__menu a[aria-current="page"]::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -4px;
+    height: 2px;
+    background: var(--color-terracotta);
+  }
+  .nav__close, .nav__scrim { display: none; }
+  .nav__cta { margin-left: var(--space-2); }
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  padding-block: var(--space-8) var(--space-7);
+  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 100%);
+  text-align: center;
+}
+.hero h1 {
+  font-size: clamp(var(--fs-2xl), 5vw, var(--fs-3xl));
+  max-width: 16ch;
+  margin-inline: auto;
+}
+.hero .lead { max-width: 56ch; margin: var(--space-4) auto 0; }
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-6);
+}
+.hero__image {
+  margin-top: var(--space-7);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 16 / 7;
+  background: var(--color-sage-pale);
+}
+
+/* ---------- Image placeholder (until real photography is added) ---------- */
+.img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-4);
+  background: repeating-linear-gradient(135deg, var(--color-sage-pale), var(--color-sage-pale) 10px, var(--color-cream-deep) 10px, var(--color-cream-deep) 20px);
+  color: var(--color-charcoal-soft);
+  font-size: var(--fs-sm);
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+  min-height: 160px;
+  min-width: 0;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+  min-width: 0;
+}
+
+/* Pricing card */
+.plan-card { position: relative; text-align: left; }
+.plan-card--featured { border-color: var(--color-terracotta); box-shadow: var(--shadow-md); }
+.plan-card__badge {
+  position: absolute;
+  top: -14px; left: var(--space-5);
+  background: var(--color-gold-dk);
+  color: var(--color-white);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+}
+.plan-card__price { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--color-terracotta-dk); }
+.plan-card__price span { font-family: var(--font-body); font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-charcoal-soft); }
+
+/* Class / event card */
+.class-card__meta { display: flex; gap: var(--space-3); font-size: var(--fs-sm); color: var(--color-sage-dk); font-weight: var(--fw-medium); }
+
+/* Instructor card */
+.instructor-card { text-align: center; align-items: center; }
+.instructor-card .img-placeholder { width: 128px; height: 128px; border-radius: 50%; }
+
+/* FAQ / accordion */
+.accordion-item { border-bottom: 1px solid var(--color-border); }
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  color: var(--color-charcoal);
+}
+.accordion-trigger__icon { flex-shrink: 0; transition: transform var(--duration-base) var(--ease-standard); }
+.accordion-trigger[aria-expanded="true"] .accordion-trigger__icon { transform: rotate(45deg); }
+.accordion-panel {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height var(--duration-base) var(--ease-standard);
+}
+.accordion-panel__inner { padding-bottom: var(--space-5); color: var(--color-charcoal-soft); }
+.accordion-item.is-open .accordion-panel { max-height: 600px; }
+
+/* Callout / banner */
+.callout {
+  background: var(--color-sage);
+  color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-7);
+  text-align: center;
+}
+.callout h2, .callout .lead { color: var(--color-white); }
+.callout .lead { opacity: 0.92; }
+.callout--terracotta { background: var(--color-terracotta); }
+
+/* Contact / form */
+.form-field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
+.form-field label { font-weight: var(--fw-medium); font-size: var(--fs-sm); }
+.form-field input,
+.form-field textarea,
+.form-field select {
+  font: inherit;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  color: var(--color-charcoal);
+}
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--color-sage);
+}
+.form-hint { font-size: var(--fs-xs); color: var(--color-charcoal-soft); }
+
+/* Info list (address/phone/email rows) */
+.info-list { display: flex; flex-direction: column; }
+.info-list__item { display: flex; gap: var(--space-3); align-items: center; }
+.info-list__item svg { flex-shrink: 0; color: var(--color-terracotta-dk); }
+.info-list__item a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+/* Table (pricing / rental rates) */
+.rate-table { width: 100%; border-collapse: collapse; }
+.rate-table th, .rate-table td {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+.rate-table th { font-family: var(--font-display); font-weight: var(--fw-semibold); }
+
+/* Badge (member perk, placeholder notice) */
+.badge {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--color-sage-pale);
+  color: var(--color-sage-dk);
+}
+.notice {
+  background: var(--color-blush);
+  border: 1px dashed var(--color-terracotta);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--color-charcoal-soft);
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  background: var(--color-charcoal);
+  color: var(--color-cream);
+  padding-block: var(--space-8) var(--space-6);
+  margin-top: var(--space-9);
+}
+.site-footer a {
+  text-decoration: none;
+  color: var(--color-cream);
+  opacity: 0.85;
+  /* 44px minimum touch target (WCAG 2.5.5) without changing visible text size */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+}
+.site-footer a:hover { opacity: 1; text-decoration: underline; }
+.site-footer h3 { color: var(--color-cream); font-size: var(--fs-base); margin-bottom: var(--space-3); }
+.footer-grid {
+  display: grid;
+  gap: var(--space-6);
+  grid-template-columns: 1fr;
+  padding-bottom: var(--space-7);
+  border-bottom: 1px solid rgba(250, 246, 240, 0.15);
+}
+@media (min-width: 720px) {
+  .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+}
+.footer-grid ul { display: flex; flex-direction: column; }
+.footer-tagline { font-family: var(--font-display); font-size: var(--fs-lg); }
+.footer-social { display: flex; gap: var(--space-4); margin-top: var(--space-2); }
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: space-between;
+  padding-top: var(--space-5);
+  font-size: var(--fs-xs);
+  opacity: 0.7;
+}
+
+/* ---------- Utilities ---------- */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+.text-center { text-align: center; }
+.mt-0 { margin-top: 0; }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-5 { margin-top: var(--space-5); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-7 { margin-top: var(--space-7); }
+
+/* Sub-page hero: same component as .hero, shorter — used on every page
+   except the homepage. Was previously a one-off inline style repeated on
+   14 pages; consolidated here so there's one place to change it. */
+.hero--sub { padding-block: var(--space-7); }
+
+/* Centered link/button below a content block ("See all X", "Read more") —
+   was a repeated inline style; consolidated for consistency. */
+.section-cta { margin-top: var(--space-6); text-align: center; }
+
+/* Cross-sell banner pointing at membership pricing, used on content pages
+   (classes, instructors, events) that aren't the pricing page itself —
+   keeps the membership upsell one click away everywhere, not just on
+   the homepage and pricing page. */
+.membership-nudge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  background: var(--color-sage-pale);
+  border-radius: var(--radius-md);
+  padding: var(--space-5) var(--space-6);
+  margin-top: var(--space-7);
+}
+.membership-nudge p { margin: 0; }
+.membership-nudge strong { color: var(--color-sage-dk); }
