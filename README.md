@@ -8,8 +8,12 @@ The live site is built on Wix. Wix doesn't let you export the underlying source,
 
 ## What's here
 
+The deployable site lives at the **repo root** — index.html and friends sit
+at the top level (not in a subfolder), so Vercel/Netlify/GitHub Pages all
+pick it up with zero configuration.
+
 ```
-into-the-well-collective/
+Into-the-Well/
   index.html                   Home
   classes.html
   instructors.html
@@ -30,6 +34,10 @@ into-the-well-collective/
   js/main.js                  mobile nav + FAQ accordion
   assets/                     empty — real photos go here
   design-system.md            full design system documentation
+  ux-audit-report.md          UX/UI + accessibility audit and fixes
+  generator/                  the Python scripts that generate the HTML above
+    build_site.py
+    pages.py
 ```
 
 ## What you need to do before this can replace the live site
@@ -47,17 +55,19 @@ All of these are also flagged inline as dashed `.notice` boxes directly on the r
 
 ## How the pages were generated
 
-Rather than hand-writing 15 nearly-identical HTML files, they're generated from two Python scripts (`build_site.py` + `pages.py`, in the parent folder, not part of the deployable site) so the header/footer/nav stay perfectly consistent. If you want to make a change that touches **every page** (e.g. nav links, footer, logo), it's easiest to edit those scripts and regenerate rather than hand-editing 15 files:
+Rather than hand-writing 15 nearly-identical HTML files, they're generated from two Python scripts (`generator/build_site.py` + `generator/pages.py`) so the header/footer/nav stay perfectly consistent. If you want to make a change that touches **every page** (e.g. nav links, footer, logo), it's easiest to edit those scripts and regenerate rather than hand-editing 15 files:
 
 ```
-python3 pages.py
+cd generator && python3 pages.py
 ```
 
-If you'd rather just hand-edit the HTML directly going forward (no Python needed), that's completely fine too — the generator is a convenience, not a requirement. The output files are ordinary static HTML with nothing generator-specific in them.
+That writes the regenerated HTML/CSS/JS straight to the repo root. If you'd rather just hand-edit the HTML directly going forward (no Python needed), that's completely fine too — the generator is a convenience, not a requirement. The output files are ordinary static HTML with nothing generator-specific in them.
 
 ## Hosting
 
 Any static host works: Netlify, Vercel, GitHub Pages, Cloudflare Pages, or a traditional server (upload via FTP/cPanel to serve `index.html`). No server-side code, database, or build step is required for the pages themselves — only for whichever booking/payment/form providers you choose above.
+
+Because `index.html` sits at the repo root, connecting this repo to Vercel (or Netlify) needs **no configuration** — leave "Root Directory" as the default (repo root), Framework Preset as "Other", and no build command. If a deploy still 404s, double-check those three settings weren't changed, and confirm the deployment picked up the latest commit on `main`.
 
 ## Accessibility & mobile
 

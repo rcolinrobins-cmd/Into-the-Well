@@ -7,8 +7,10 @@ easy to hand-edit afterward (each output file is just flat HTML).
 """
 import os
 
-# Output directory: the deployable "site/" folder next to this script.
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "site")
+# Output directory: the repo root (one level up from this script), so the
+# deployable site sits at the top of the repo — Vercel/Netlify/GitHub Pages
+# all expect index.html at the repo root by default with no extra config.
+ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 SITE_NAME = "Into The Well Collective"
 PHONE = "214-726-5218"
