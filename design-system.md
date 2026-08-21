@@ -41,9 +41,9 @@ All text/background pairings above meet WCAG AA (4.5:1) at body text size. If yo
 
 ## Components
 
-- **Buttons** (`.btn`, `.btn--primary`, `.btn--secondary`, `.btn--on-dark`) — pill-shaped, 44px minimum height for touch targets.
+- **Buttons** (`.btn`, `.btn--primary`, `.btn--secondary`, `.btn--on-dark`) — pill-shaped, 44px minimum height for touch targets, horizontal padding driven by the `--btn-padding-x`/`--btn-padding-y` custom properties (32px/12px by default, never below the 8–12px floor — see the button bug note below). `flex-shrink: 0` and `white-space: nowrap` are permanent on `.btn` — a button's label never wraps or gets compressed, in a flex row or anywhere else.
 - **Cards** (`.card`) — used for classes, instructors, pricing plans (`.plan-card`), events, and partners. All are grid children with `min-width: 0` set deliberately — removing that can reintroduce the overflow bug described below.
-- **Nav** (`.site-header`, `.nav__menu`) — sticky header, off-canvas slide-in menu below 960px, inline row above it. Current nav item is marked via `data-page` on `<body>` + JS.
+- **Nav** (`.site-header`, `.nav__menu`) — transparent header at rest (no background fill); once the page scrolls past a small offset, `main.js` adds `.is-scrolled`, which brings in a light tint + blur purely so nav text stays legible over whatever content is passing underneath — still not a solid/white bar. Off-canvas slide-in menu below 960px, inline row above it. Current nav item is marked via `data-page` on `<body>` + JS. Desktop nav links share a single animated underline (`.nav__indicator`) that `main.js` slides/resizes to whichever link is hovered or focused, and glides back to the current page's link on mouseleave — see `js/main.js`. Brand mark in the nav reads the short form "Into the Well"; the full name "Into The Well Collective" (`SITE_NAME` in `generator/build_site.py`) is still used everywhere else — page titles, meta description, footer, social `aria-label`s.
 - **Accordion** (`.accordion-item`, used on `faqs.html`) — accessible via `aria-expanded`, keyboard-operable (native `<button>`).
 - **Image placeholders** (`.img-placeholder`) — the diagonal-striped boxes throughout the site mark where a real photo should go. Search for `img-placeholder` across the HTML files to find every spot.
 - **Notices** (`.notice`) — dashed terracotta boxes flagging things that need a decision or integration before launch (payment provider, booking widget, form backend, etc.). Search for `class="notice"` to find every one and resolve them before going live.
@@ -51,6 +51,10 @@ All text/background pairings above meet WCAG AA (4.5:1) at body text size. If yo
 ## A layout bug worth knowing about (if you edit the grids)
 
 Any `.grid` with cards containing `.img-placeholder` (which uses `aspect-ratio`) can silently blow out past its container — a classic CSS Grid issue where a grid item's implicit `min-width: auto` lets its content force the column wider than its fair share, overflowing the page horizontally. The fix already in place is `.grid > * { min-width: 0; }` plus the same on `.card` and `.img-placeholder`. If you add a new card-grid section and see unexpected horizontal scroll, this is almost certainly why — make sure the new grid items also get `min-width: 0`.
+
+## A button bug worth knowing about (if you put buttons in a flex row)
+
+The nav's "Book a Class" button once looked cramped — its label crowded right up against the edges of the pill. The cause wasn't insufficient padding (32px horizontal was already generous); it was that the button sat in a flex row (`.nav__menu`, `display:flex`) with no `flex-shrink: 0`, so once the row ran short on space the browser shrank the button's box below what its own padding wanted, squeezing the label toward the edges — and without `white-space: nowrap`, a squeezed button could wrap its label instead of just holding its size. Both are now permanent rules on `.btn` itself, so no button anywhere in this system — nav, card, form, anywhere — can be compressed or wrap its label again. If a future button still looks tight, raise `--btn-padding-x`/`--btn-padding-y` (or a size-specific override like `.btn--sm` does) rather than touching the base padding logic.
 
 ## Known placeholders / not-yet-wired functionality
 

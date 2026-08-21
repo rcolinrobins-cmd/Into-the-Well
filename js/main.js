@@ -81,4 +81,66 @@
       a.setAttribute("aria-current", "page");
     });
   }
+
+  /* ---------- Desktop nav: sliding hover/focus underline ----------
+   * One shared element (.nav__indicator) animates its position and width to
+   * sit under whichever primary-nav link is hovered or keyboard-focused,
+   * and glides back to the current page's link when the pointer/focus
+   * leaves the nav. Deliberately scoped to the links inside [data-nav-links]
+   * only — the "Book a Class" pill CTA is a filled button, not a text link,
+   * and doesn't want an underline sliding under it too.
+   */
+  var indicator = document.querySelector(".nav__indicator");
+  var navLinks = menu ? Array.prototype.slice.call(menu.querySelectorAll("[data-nav-links] a")) : [];
+  if (indicator && navLinks.length) {
+    var desktopMq = window.matchMedia("(min-width: 960px)");
+
+    var moveIndicatorTo = function (el) {
+      if (!el || !desktopMq.matches) {
+        indicator.classList.remove("is-visible");
+        return;
+      }
+      var menuRect = menu.getBoundingClientRect();
+      var elRect = el.getBoundingClientRect();
+      indicator.style.transform = "translateX(" + (elRect.left - menuRect.left) + "px)";
+      indicator.style.width = elRect.width + "px";
+      indicator.classList.add("is-visible");
+    };
+    var resetToCurrentLink = function () {
+      moveIndicatorTo(menu.querySelector('a[aria-current="page"]'));
+    };
+
+    navLinks.forEach(function (a) {
+      a.addEventListener("mouseenter", function () { moveIndicatorTo(a); });
+      a.addEventListener("focus", function () { moveIndicatorTo(a); });
+    });
+    menu.addEventListener("mouseleave", resetToCurrentLink);
+    menu.addEventListener("focusout", function (e) {
+      if (!menu.contains(e.relatedTarget)) resetToCurrentLink();
+    });
+    // Reposition on resize/orientation change and once webfonts finish
+    // loading (both can shift link positions out from under the indicator).
+    window.addEventListener("resize", resetToCurrentLink);
+    desktopMq.addEventListener("change", resetToCurrentLink);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(resetToCurrentLink);
+    }
+    resetToCurrentLink();
+  }
+
+  /* ---------- Header: tint in only once the page has scrolled ----------
+   * The header is transparent at rest by design. Once content has actually
+   * scrolled underneath it, a light tint + blur keeps nav text legible —
+   * still not the solid white bar this replaced. Threshold matches a
+   * typical hero's height fraction so it kicks in quickly, not the instant
+   * you nudge the page.
+   */
+  var header = document.querySelector(".site-header");
+  if (header) {
+    var applyScrollState = function () {
+      header.classList.toggle("is-scrolled", window.scrollY > 24);
+    };
+    window.addEventListener("scroll", applyScrollState, { passive: true });
+    applyScrollState();
+  }
 })();
