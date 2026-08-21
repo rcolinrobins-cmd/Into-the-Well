@@ -331,7 +331,14 @@ h3 { font-size: var(--fs-lg); }
 
 /* ---------- Hero ---------- */
 .hero {
-  padding-block: var(--space-8) var(--space-7);
+  /* Pulled up underneath the transparent header (negative margin) and given
+     matching extra top padding, so the hero's own gradient is what shows
+     through the nav immediately instead of a gap of plain body background —
+     the actual fix for the header looking like a leftover white bar.
+     Content position is unchanged; only the background extends further up. */
+  margin-top: calc(-1 * var(--header-height));
+  padding-top: calc(var(--space-8) + var(--header-height));
+  padding-bottom: var(--space-7);
   background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 100%);
   text-align: center;
 }
@@ -576,7 +583,7 @@ h3 { font-size: var(--fs-lg); }
 /* Sub-page hero: same component as .hero, shorter — used on every page
    except the homepage. Was previously a one-off inline style repeated on
    14 pages; consolidated here so there's one place to change it. */
-.hero--sub { padding-block: var(--space-7); }
+.hero--sub { padding-top: calc(var(--space-7) + var(--header-height)); }
 
 /* Centered link/button below a content block ("See all X", "Read more") —
    was a repeated inline style; consolidated for consistency. */

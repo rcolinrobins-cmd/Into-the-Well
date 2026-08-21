@@ -24,6 +24,13 @@
   --color-border:       #E4DACB; /* hairlines, card borders */
   --color-focus:        #1C6E5C; /* focus ring — distinct from brand accents, 3:1+ vs bg */
 
+  /* Nav height, used to pull the hero's background up underneath the
+     transparent header (see .hero) so its gradient is visible immediately
+     instead of a gap of plain body background showing through first.
+     80px covers the tallest rendered header (desktop, ~80.2px); a couple
+     px of slack here is invisible, being short would leave a visible seam. */
+  --header-height: 80px;
+
   /* ---- Typography ----
      Display: warm serif for headlines/brand voice.
      Body: clean humanist sans for readability at small sizes. */
