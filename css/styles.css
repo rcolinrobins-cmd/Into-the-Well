@@ -306,6 +306,10 @@ h3 { font-size: var(--fs-lg); }
     position: relative; /* positioning context for .nav__indicator */
     width: auto;
     height: auto;
+    background: transparent; /* undo the mobile off-canvas panel's solid
+      white fill — without this override it silently shows through as a
+      white box behind the desktop nav links/CTA even though .site-header
+      itself is transparent. See design-system.md. */
     box-shadow: none;
     padding: 0;
     flex-direction: row;

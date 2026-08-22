@@ -56,6 +56,10 @@ Any `.grid` with cards containing `.img-placeholder` (which uses `aspect-ratio`)
 
 The nav's "Book a Class" button once looked cramped — its label crowded right up against the edges of the pill. The cause wasn't insufficient padding (32px horizontal was already generous); it was that the button sat in a flex row (`.nav__menu`, `display:flex`) with no `flex-shrink: 0`, so once the row ran short on space the browser shrank the button's box below what its own padding wanted, squeezing the label toward the edges — and without `white-space: nowrap`, a squeezed button could wrap its label instead of just holding its size. Both are now permanent rules on `.btn` itself, so no button anywhere in this system — nav, card, form, anywhere — can be compressed or wrap its label again. If a future button still looks tight, raise `--btn-padding-x`/`--btn-padding-y` (or a size-specific override like `.btn--sm` does) rather than touching the base padding logic.
 
+## A "white nav bar" bug worth knowing about
+
+The header looked solid white even after `.site-header` was set to `background: transparent`, because `.nav__menu` — the same element used as the mobile off-canvas drawer — has its own `background: var(--color-white)` (the drawer needs an opaque panel to slide in). The `min-width: 960px` media query that turns that drawer back into an inline desktop row reset its position/size/shadow/padding, but never reset `background`, so the drawer's white fill kept showing through as a solid box behind the desktop links and CTA. Fixed by explicitly setting `background: transparent` on `.nav__menu` inside that desktop media query. If `.nav__menu` ever needs another mobile-only visual property, mirror the same pattern: anything set for the off-canvas drawer must be explicitly undone in the desktop override, not assumed to fall away on its own.
+
 ## Known placeholders / not-yet-wired functionality
 
 - **Booking**: `book-online.html` has a placeholder for a booking calendar. The old Wix booking system doesn't transfer — pick a provider (Momence, Mindbody, Vagaro, Acuity, etc.) and embed its widget.
