@@ -416,10 +416,19 @@ h3 { font-size: var(--fs-lg); }
    to be there) are what actually make every row line up with every other
    row, not just the cards within one row. */
 .class-card__meta { display: flex; gap: var(--space-3); font-size: var(--fs-sm); color: var(--color-sage-dk); font-weight: var(--fw-medium); }
+/* Name + price share one row (price at the end/right), with the
+   description immediately underneath — no dedicated price line. */
+.class-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.class-card__head .class-card__meta { flex-shrink: 0; }
 .class-card h3 {
   /* Reserves 2 lines so a short name (e.g. "Barre") and a long one that
-     wraps (e.g. "Naptime: A Restorative Practice") both leave the price
-     starting at the same spot underneath. */
+     wraps (e.g. "Naptime: A Restorative Practice") both leave the
+     description starting at the same spot underneath. */
   min-height: calc(var(--lh-tight) * var(--fs-lg) * 2);
 }
 .class-card .text-muted {
