@@ -334,8 +334,8 @@ h3 { font-size: var(--fs-lg); }
      fill it stayed pink/blush far longer than on any other page. Anchoring
      the fade to an absolute distance from the top makes it fade out at the
      same point everywhere, regardless of how tall the hero ends up being.
-     Fades to solid white (not --color-cream) within 180px. */
-  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-white) 180px, var(--color-white) 100%);
+     Fades to solid --color-cream (#FCFAF6) within 180px. */
+  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 180px, var(--color-cream) 100%);
   text-align: center;
 }
 .hero h1 {
