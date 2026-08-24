@@ -280,12 +280,12 @@
         modalSchedule.innerHTML = rows
           .map(function (r) {
             return (
-              '<li><span class="instructor-modal__schedule-date">' +
+              '<li><span class="instructor-modal__schedule-name">' +
+              r.className +
+              '</span><span class="instructor-modal__schedule-date">' +
               formatClassDate(r.date) +
               " · " +
               r.time +
-              "</span><span>" +
-              r.className +
               "</span></li>"
             );
           })

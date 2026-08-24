@@ -512,16 +512,27 @@ h3 { font-size: var(--fs-lg); }
 .instructor-card .img-placeholder { width: 128px; height: 128px; border-radius: 50%; }
 .instructor-card__bio {
   color: var(--color-charcoal-soft);
-  /* Clamped to 2 lines with a real ellipsis — bio_short in pages.py is
-     written long enough to always overflow, so this always truncates
-     rather than only truncating on some card widths. */
+  /* Photo/name/role stay centered (.instructor-card's own text-align), but
+     multi-line body copy reads better left-aligned — and needs align-self:
+     stretch/width:100% to actually span the card's full width instead of
+     shrink-wrapping to content width like every other centered child does. */
+  text-align: left;
+  align-self: stretch;
+  width: 100%;
+  /* Clamped to 3 lines with a real ellipsis — bio_full in pages.py (the
+     same text shown in full in the modal) is long enough to always
+     overflow here, so this always truncates rather than only truncating
+     on some card widths. */
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   overflow: hidden;
 }
 .link-more {
+  /* Left-aligned to match .instructor-card__bio's edge, not centered like
+     the rest of .instructor-card. */
+  align-self: flex-start;
   background: none;
   border: none;
   padding: 0;
@@ -540,8 +551,10 @@ h3 { font-size: var(--fs-lg); }
   border: none;
   border-radius: var(--radius-lg);
   padding: 0;
-  max-width: min(560px, 92vw);
-  width: 100%;
+  /* Scales with viewport width (90vw) rather than being capped tight to a
+     small fixed size — 760px only kicks in on wide desktop screens, so it
+     doesn't grow absurdly large on an ultrawide monitor. */
+  width: min(90vw, 760px);
   box-shadow: var(--shadow-lg);
   background: var(--color-white);
   color: var(--color-charcoal);
@@ -558,6 +571,9 @@ h3 { font-size: var(--fs-lg); }
 .instructor-modal__photo .img-placeholder { width: 160px; height: 160px; border-radius: 50%; }
 .instructor-modal h2 { margin-top: var(--space-4); text-align: center; }
 .instructor-modal .badge { display: block; width: fit-content; margin: var(--space-2) auto var(--space-4); }
+/* Caps line length for readability now that the modal itself is wider —
+   without this, the bio would stretch nearly edge-to-edge on a 760px modal. */
+[data-modal-bio] { max-width: 65ch; margin-inline: auto; }
 .instructor-modal h3 { font-size: var(--fs-base); margin-top: var(--space-5); margin-bottom: var(--space-3); }
 .instructor-modal__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .instructor-modal__schedule { display: flex; flex-direction: column; gap: var(--space-2); }
@@ -571,7 +587,8 @@ h3 { font-size: var(--fs-lg); }
   border-radius: var(--radius-sm);
   font-size: var(--fs-sm);
 }
-.instructor-modal__schedule-date { font-weight: var(--fw-medium); color: var(--color-charcoal); }
+.instructor-modal__schedule-name { font-weight: var(--fw-semibold); color: var(--color-charcoal); }
+.instructor-modal__schedule-date { color: var(--color-charcoal-soft); white-space: nowrap; }
 
 /* FAQ / accordion */
 .accordion-item { border-bottom: 1px solid var(--color-border); }
