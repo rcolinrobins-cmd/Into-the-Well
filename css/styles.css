@@ -408,6 +408,70 @@ h3 { font-size: var(--fs-lg); }
 .plan-card__price { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--color-terracotta-dk); }
 .plan-card__price span { font-family: var(--font-body); font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-charcoal-soft); }
 
+/* Tiered pricing row — the 3 core plans. Same .plan-card component as
+   before, just uneven columns so the featured middle plan reads as the
+   obvious "best value" pick without relying on the badge alone. */
+@media (min-width: 900px) {
+  .plan-row--tiered { grid-template-columns: 0.9fr 1.15fr 0.9fr; align-items: center; }
+}
+.plan-row--tiered .plan-card--featured {
+  padding: var(--space-6);
+}
+.plan-row--tiered .plan-card--featured .plan-card__price { font-size: var(--fs-2xl); }
+.plan-row--tiered .plan-card:not(.plan-card--featured) {
+  padding: var(--space-4);
+}
+.plan-row--tiered .plan-card:not(.plan-card--featured) .plan-card__price { font-size: var(--fs-lg); }
+
+/* Secondary plans — short-term/lower-commitment options. Deliberately not
+   cards: a scannable row list reads as "more options" rather than
+   competing for the same attention as the three plans above. */
+.plan-list {
+  max-width: 820px;
+  margin-inline: auto;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.plan-list__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
+}
+.plan-list__row:last-child { border-bottom: none; }
+.plan-list__info { flex: 1 1 240px; min-width: 0; text-align: left; }
+.plan-list__info h3 { margin-bottom: var(--space-1); }
+.plan-list__info p { margin: 0; }
+/* Terms + CTA travel together as one flex item, so the row only ever has
+   two things to wrap (info, action) instead of three fighting for space —
+   avoids price/badge/button each collapsing onto their own line. */
+.plan-list__action {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+  min-width: 170px;
+}
+.plan-list__price { font-family: var(--font-display); font-size: var(--fs-lg); color: var(--color-terracotta-dk); margin: 0; text-align: right; }
+.plan-list__price span { display: block; font-family: var(--font-body); font-size: var(--fs-xs); font-weight: var(--fw-regular); color: var(--color-charcoal-soft); }
+.plan-list__action .btn { width: 100%; }
+@media (max-width: 640px) {
+  .plan-list__row { flex-direction: column; align-items: stretch; }
+  /* In row layout "240px"/"170px" above are min widths on the inline
+     axis; flex-direction:column turns that same axis vertical, so without
+     resetting to flex:none here they'd inflate into tall flex-basis
+     heights (with .plan-list__info also still flex-grow:1) and blow a gap
+     into the middle of the row. */
+  .plan-list__info, .plan-list__action { flex: none; }
+  .plan-list__action { align-items: stretch; }
+  .plan-list__price { text-align: left; }
+}
+
 /* Class / event card — every .class-card in a grid should read as the same
    size with its photo/name/price/description all starting at the same
    height, even though grid rows only stretch cards to match *their own
@@ -659,7 +723,11 @@ h3 { font-size: var(--fs-lg); }
 }
 
 /* Table (pricing / rental rates) */
-.rate-table { width: 100%; border-collapse: collapse; }
+/* min-width:0 lets this shrink below the table's intrinsic width inside
+   the .card flex column — without it, flex items default to min-width:auto
+   and the table pushes the whole card wider instead of scrolling. */
+.rate-table-wrap { overflow-x: auto; min-width: 0; }
+.rate-table { width: 100%; min-width: 420px; border-collapse: collapse; }
 .rate-table th, .rate-table td {
   text-align: left;
   padding: var(--space-3) var(--space-4);

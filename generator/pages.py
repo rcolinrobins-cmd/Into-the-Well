@@ -7,13 +7,16 @@ from build_site import (
 
 NOTICE = '<div class="notice">{}</div>'
 
-def membership_nudge(copy, cta_text="See Membership Plans"):
+def membership_nudge(copy, cta_text="See Membership Plans", href="pricing.html"):
     """Cross-sell banner pointing every content page at pricing.html —
     keeps the primary revenue path (memberships) one click away from
-    anywhere on the site, not just the homepage and pricing page."""
+    anywhere on the site, not just the homepage and pricing page. Also
+    reused on the pricing page itself (with a different href/copy) as the
+    site's one alert/banner CTA style, so every "which one should I pick"
+    prompt looks the same wherever it shows up."""
     return f'''<div class="membership-nudge">
         <p>{copy}</p>
-        <a class="btn btn--primary btn--sm" href="pricing.html">{cta_text}</a>
+        <a class="btn btn--primary btn--sm" href="{href}">{cta_text}</a>
       </div>'''
 
 # ---------------------------------------------------------------- HOME
@@ -373,15 +376,21 @@ write(
 )
 
 # ---------------------------------------------------------------- PRICING
-PLANS = [
+# The three core plans get the featured-tier card treatment (left/right
+# smaller, middle larger — "best value" front and center). Everything else
+# is a lower-commitment/short-term option and reads better as a scannable
+# list than as eight identical cards competing for attention.
+TIER_PLANS = [
     ("Drop-In Class", "$30", "one-time", "Reserve the class using the booking calendar. Your charge appears at checkout.", False, "Book a Drop-In", None),
     ("Unlimited Monthly Membership", "$109", "/month, auto-renews", "Enjoy as many classes each month as your heart desires. Space must be reserved online prior.", True, "Start Unlimited Membership", "Pays for itself in 4 classes"),
     ("Membership Lite", "$79", "/month, auto-renews", "8 class credits per month — perfect for someone who only wants to come occasionally.", False, "Start Membership Lite", "As low as $9.88/class"),
-    ("Weekend Warrior", "$69", "/month, auto-renews", "Unlimited access to weekend classes, plus all other membership bonuses.", False, "Start Weekend Warrior", "Pays for itself in 3 classes"),
-    ("5 Class Pass", "$125", "one-time, valid 3 months", "Take 5 classes for the price of 4.", False, "Buy the 5 Class Pass", "Just $25/class"),
-    ("One Week Unlimited", "$40", "one-time, valid 1 week", "A flat fee for one week of unlimited classes. If a membership is purchased right after, $35 is refunded from the first month.", False, "Start My Trial Week", None),
-    ("One Month Unlimited", "$149", "one-time, valid 1 month", "One month of unlimited classes, month-to-month — great for a trial.", False, "Start One Month Unlimited", None),
-    ("Student Unlimited Membership", "$79", "/month, auto-renews", "Discounted membership plan for anyone enrolled in school. Must use a school email to register.", False, "Get Student Pricing", "Pays for itself in 3 classes"),
+]
+LIST_PLANS = [
+    ("Weekend Warrior", "$69", "/month, auto-renews", "Unlimited access to weekend classes, plus all other membership bonuses.", "Start Weekend Warrior", "Pays for itself in 3 classes"),
+    ("5 Class Pass", "$125", "one-time, valid 3 months", "Take 5 classes for the price of 4.", "Buy the 5 Class Pass", "Just $25/class"),
+    ("One Week Unlimited", "$40", "one-time, valid 1 week", "A flat fee for one week of unlimited classes. If a membership is purchased right after, $35 is refunded from the first month.", "Start My Trial Week", None),
+    ("One Month Unlimited", "$149", "one-time, valid 1 month", "One month of unlimited classes, month-to-month — great for a trial.", "Start One Month Unlimited", None),
+    ("Student Unlimited Membership", "$79", "/month, auto-renews", "Discounted membership plan for anyone enrolled in school. Must use a school email to register.", "Get Student Pricing", "Pays for itself in 3 classes"),
 ]
 PERKS = [
     "20% discount on special events, workshops, and partnership programs",
@@ -400,7 +409,7 @@ pricing_body = f"""
 <section class="section">
   <div class="container">
     <h2 class="visually-hidden">Plans</h2>
-    <div class="grid grid--3">
+    <div class="grid grid--3 plan-row--tiered">
       {"".join(f'''<article class="card plan-card {"plan-card--featured" if featured else ""}">
         {'<span class="plan-card__badge">Best Value</span>' if featured else ""}
         <h3>{name}</h3>
@@ -408,17 +417,38 @@ pricing_body = f"""
         <p class="text-muted">{desc}</p>
         {f'<p class="badge">{hint}</p>' if hint else ""}
         <a class="btn {"btn--primary" if featured else "btn--secondary"} btn--block" href="book-online.html">{cta}</a>
-      </article>''' for name, price, terms, desc, featured, cta, hint in PLANS)}
+      </article>''' for name, price, terms, desc, featured, cta, hint in TIER_PLANS)}
     </div>
   </div>
 </section>
 <section class="section section--alt">
+  <div class="container">
+    <div class="section-head section-head--center">
+      <h2>More Ways to Join</h2>
+      <p class="text-muted">Prefer a punch pass or a short trial before committing? Here are the rest of our options.</p>
+    </div>
+    <div class="plan-list">
+      {"".join(f'''<div class="plan-list__row">
+        <div class="plan-list__info">
+          <h3>{name}</h3>
+          <p class="text-muted">{desc}</p>
+        </div>
+        <div class="plan-list__action">
+          <p class="plan-list__price">{price}<span>{terms}</span></p>
+          {f'<p class="badge">{hint}</p>' if hint else ""}
+          <a class="btn btn--secondary btn--sm" href="book-online.html">{cta}</a>
+        </div>
+      </div>''' for name, price, terms, desc, cta, hint in LIST_PLANS)}
+    </div>
+  </div>
+</section>
+<section class="section">
   <div class="container container--narrow text-center">
     <h2>Every membership includes</h2>
     <ul class="grid grid--3 mt-5">
       {"".join(f'<li class="card">{perk}</li>' for perk in PERKS)}
     </ul>
-    <p class="mt-6">Not sure which plan fits? <a href="contact.html">Contact us</a> and we'll help you choose.</p>
+    {membership_nudge("Not sure which plan fits? Tell us how often you'd like to practice and we'll help you choose.", "Contact Us", "contact.html")}
     {NOTICE.format("Checkout and recurring billing ran through Wix on the old site. Plans above will need to connect to your new payment/booking provider (e.g. Stripe Billing, Momence, Mindbody) before these buttons can actually charge a card.")}
   </div>
 </section>
@@ -462,12 +492,12 @@ write(
 
 # ---------------------------------------------------------------- WORKSHOPS & EVENTS
 EVENTS = [
-    ("The Well Experience", "$35", ""),
-    ("Mommy & Me: Workout + Play", "$25", "45 minutes"),
-    ("Garland Girlies Pilates", "$15", ""),
-    ("New Moon Sound Bath", "$35", ""),
-    ("WWS Drop In: Creative Reset", "$35", "1 hour 30 minutes"),
-    ("WWS Drop In: Hack Your Nervous System", "$35", ""),
+    ("The Well Experience", "$35", "A signature all-in-one event blending movement, breathwork, and community in a single session."),
+    ("Mommy & Me: Workout + Play", "$25", "A 45-minute parent-and-child class pairing light movement with playful bonding time."),
+    ("Garland Girlies Pilates", "$15", "A social pilates meetup for the Garland Girlies crew — mat work, laughs, and connection."),
+    ("New Moon Sound Bath", "$35", "A guided sound bath timed to the new moon, using resonant instruments for deep relaxation."),
+    ("WWS Drop In: Creative Reset", "$35", "A 90-minute, low-pressure creative reset for mind and body, part of the Women's Wellness Series."),
+    ("WWS Drop In: Hack Your Nervous System", "$35", "Practical, guided tools to calm and regulate your nervous system, part of the Women's Wellness Series."),
 ]
 events_body = f"""
 <section class="hero hero--sub">
@@ -482,12 +512,15 @@ events_body = f"""
     {NOTICE.format("Event dates/times were still loading on the live site at capture time &mdash; add your current schedule to each card below.")}
     <h2 class="visually-hidden">Upcoming workshops &amp; events</h2>
     <div class="grid grid--3 mt-6">
-      {"".join(f'''<article class="card">
+      {"".join(f'''<article class="card class-card">
         {placeholder(name, ratio="4/3")}
-        <h3>{name}</h3>
-        <p class="class-card__meta">{price}{" · " + dur if dur else ""}</p>
+        <div class="class-card__head">
+          <h3 title="{name}">{name}</h3>
+          <p class="class-card__meta">{price}</p>
+        </div>
+        <p class="text-muted">{blurb}</p>
         <a class="btn btn--sm btn--secondary" href="book-online.html" aria-label="Book {name}">Book Now</a>
-      </article>''' for name, price, dur in EVENTS)}
+      </article>''' for name, price, blurb in EVENTS)}
     </div>
     <div class="grid grid--3 mt-7">
       <a class="card" href="free-for-members.html"><h3>Free For Members</h3><p class="text-muted">1&ndash;2 workshops a month, included with membership.</p></a>
@@ -690,6 +723,7 @@ rent_body = f"""
     <h1>Celebrate life's defining moments</h1>
     <p class="lead">Host a stress-free micro-wedding, baby shower, birthday party, bridal shower, or other celebration in downtown Garland, TX. The space has a charming look, so you don't have to decorate much.</p>
     <div class="hero__actions"><a class="btn btn--primary" href="contact.html">Inquire About Renting</a></div>
+    <div class="hero__image">{placeholder("Event space photo — set up for a private event", ratio="16/7")}</div>
   </div>
 </section>
 <section class="section">
@@ -697,12 +731,14 @@ rent_body = f"""
     <div class="grid grid--2" style="align-items:start;">
       <div class="card">
         <h2>Rates</h2>
-        <table class="rate-table">
-          <thead><tr><th>Package</th><th>Rate</th><th>Minimum</th></tr></thead>
-          <tbody>
-            {"".join(f"<tr><td>{name}</td><td>{rate}</td><td>{min_}</td></tr>" for name, rate, min_ in RATES)}
-          </tbody>
-        </table>
+        <div class="rate-table-wrap">
+          <table class="rate-table">
+            <thead><tr><th>Package</th><th>Rate</th><th>Minimum</th></tr></thead>
+            <tbody>
+              {"".join(f"<tr><td>{name}</td><td>{rate}</td><td>{min_}</td></tr>" for name, rate, min_ in RATES)}
+            </tbody>
+          </table>
+        </div>
         <p class="form-hint mt-3">All rates include tables, chairs, and a complimentary setup hour. Additional cleaning, insurance, and admin fees apply.</p>
       </div>
       <div class="card">
@@ -713,9 +749,9 @@ rent_body = f"""
           <li>One free hour of setup</li>
           <li>Custom party packages available</li>
         </ul>
-        {placeholder("Event space photo", ratio="4/3")}
       </div>
     </div>
+    {membership_nudge("Ready to lock in your date? <strong>Reach out with your event date and headcount</strong> and we'll send availability and a custom quote.", "Inquire About Renting", "contact.html")}
     <p class="mt-6"><a href="faqs.html">Read rental FAQs &rarr;</a></p>
   </div>
 </section>
