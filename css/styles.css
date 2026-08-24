@@ -510,6 +510,68 @@ h3 { font-size: var(--fs-lg); }
 /* Instructor card */
 .instructor-card { text-align: center; align-items: center; }
 .instructor-card .img-placeholder { width: 128px; height: 128px; border-radius: 50%; }
+.instructor-card__bio {
+  color: var(--color-charcoal-soft);
+  /* Clamped to 2 lines with a real ellipsis — bio_short in pages.py is
+     written long enough to always overflow, so this always truncates
+     rather than only truncating on some card widths. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.link-more {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--color-terracotta-dk);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.link-more:hover { color: var(--color-terracotta); }
+
+/* Instructor bio modal — see js/main.js for open/close/populate logic. */
+.instructor-modal {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  max-width: min(560px, 92vw);
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  background: var(--color-white);
+  color: var(--color-charcoal);
+}
+.instructor-modal::backdrop { background: rgba(46, 42, 38, 0.55); }
+.instructor-modal__inner {
+  position: relative;
+  padding: var(--space-6);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.instructor-modal__close { position: absolute; top: var(--space-4); right: var(--space-4); }
+.instructor-modal__photo { width: 160px; margin-inline: auto; }
+.instructor-modal__photo .img-placeholder { width: 160px; height: 160px; border-radius: 50%; }
+.instructor-modal h2 { margin-top: var(--space-4); text-align: center; }
+.instructor-modal .badge { display: block; width: fit-content; margin: var(--space-2) auto var(--space-4); }
+.instructor-modal h3 { font-size: var(--fs-base); margin-top: var(--space-5); margin-bottom: var(--space-3); }
+.instructor-modal__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.instructor-modal__schedule { display: flex; flex-direction: column; gap: var(--space-2); }
+.instructor-modal__schedule li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-cream-deep);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+}
+.instructor-modal__schedule-date { font-weight: var(--fw-medium); color: var(--color-charcoal); }
 
 /* FAQ / accordion */
 .accordion-item { border-bottom: 1px solid var(--color-border); }
@@ -611,26 +673,33 @@ h3 { font-size: var(--fs-lg); }
 .site-footer {
   background: var(--color-charcoal);
   color: var(--color-cream);
-  padding-block: var(--space-8) var(--space-6);
-  margin-top: var(--space-9);
+  padding-block: var(--space-6) var(--space-5);
+  margin-top: var(--space-7);
 }
 .site-footer a {
   text-decoration: none;
   color: var(--color-cream);
   opacity: 0.85;
-  /* 44px minimum touch target (WCAG 2.5.5) without changing visible text size */
+  /* 44px minimum touch target (WCAG 2.5.5) on mobile, where this is a
+     single tap-friendly column. Tightened at 720px+ below — by then the
+     footer is already a 3-column grid (mouse, not thumb), and this was
+     the single biggest driver of footer height (6 links x 44px in the
+     tallest column). */
   display: inline-flex;
   align-items: center;
   min-height: 44px;
   min-width: 44px;
 }
+@media (min-width: 720px) {
+  .site-footer a { min-height: 30px; min-width: 0; }
+}
 .site-footer a:hover { opacity: 1; text-decoration: underline; }
-.site-footer h3 { color: var(--color-cream); font-size: var(--fs-base); margin-bottom: var(--space-3); }
+.site-footer h3 { color: var(--color-cream); font-size: var(--fs-base); margin-bottom: var(--space-2); }
 .footer-grid {
   display: grid;
-  gap: var(--space-6);
+  gap: var(--space-5);
   grid-template-columns: 1fr;
-  padding-bottom: var(--space-7);
+  padding-bottom: var(--space-5);
   border-bottom: 1px solid rgba(250, 246, 240, 0.15);
 }
 @media (min-width: 720px) {
@@ -638,18 +707,27 @@ h3 { font-size: var(--fs-lg); }
 }
 .footer-grid ul { display: flex; flex-direction: column; }
 .footer-tagline { font-family: var(--font-display); font-size: var(--fs-lg); }
-.footer-social { display: flex; gap: var(--space-4); margin-top: var(--space-2); }
+.footer-seo { margin-top: var(--space-2); font-size: var(--fs-sm); line-height: var(--lh-snug); opacity: 0.75; max-width: 46ch; }
+.footer-social { display: flex; gap: var(--space-3); margin-top: var(--space-3); }
 .footer-social a {
-  display: inline-flex;
-  align-items: center;
+  /* Icon-only now (no visible label) — a fixed square touch target at
+     every width, unlike the text links above, which don't need one once
+     a mouse is more likely than a thumb. */
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   min-height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: rgba(250, 246, 240, 0.08);
 }
+.footer-social a:hover { background: rgba(250, 246, 240, 0.16); }
 .footer-bottom {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
   justify-content: space-between;
-  padding-top: var(--space-5);
+  padding-top: var(--space-4);
   font-size: var(--fs-xs);
   opacity: 0.7;
 }

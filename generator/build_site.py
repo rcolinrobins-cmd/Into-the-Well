@@ -37,6 +37,8 @@ ICON_CHEVRON = '<svg class="accordion-trigger__icon" width="20" height="20" view
 ICON_PIN = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>'
 ICON_PHONE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>'
 ICON_MAIL = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>'
+ICON_INSTAGRAM = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>'
+ICON_FACEBOOK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>'
 
 
 def placeholder(label, ratio="16/10", radius="var(--radius-md)"):
@@ -101,10 +103,10 @@ def base_page(filename, title, description, body, extra_head=""):
     <div class="footer-grid">
       <div>
         <p class="footer-tagline">{TAGLINE}</p>
-        <p style="margin-top:var(--space-3); opacity:.85;">A movement studio, community &amp; event space in Garland, TX &mdash; built for inclusion, whole-body wellness, and self-care for all humans.</p>
+        <p class="footer-seo">Into The Well Collective is a yoga, pilates, and barre studio in Garland, TX, serving Garland, Dallas, and the greater Dallas-Fort Worth area with inclusive yoga classes, pilates, barre, and strength training for every body and every level, plus wellness workshops and community events.</p>
         <div class="footer-social">
-          <a href="{INSTAGRAM}" aria-label="Into The Well Collective on Instagram" target="_blank" rel="noopener">Instagram</a>
-          <a href="{FACEBOOK}" aria-label="Into The Well Collective on Facebook" target="_blank" rel="noopener">Facebook</a>
+          <a href="{INSTAGRAM}" aria-label="Into The Well Collective on Instagram" target="_blank" rel="noopener">{ICON_INSTAGRAM}</a>
+          <a href="{FACEBOOK}" aria-label="Into The Well Collective on Facebook" target="_blank" rel="noopener">{ICON_FACEBOOK}</a>
         </div>
       </div>
       <div>
@@ -131,7 +133,6 @@ def base_page(filename, title, description, body, extra_head=""):
     </div>
     <div class="footer-bottom">
       <span>&copy; 2026 {SITE_NAME}. {ADDRESS} &middot; {PHONE} &middot; {EMAIL}</span>
-      <span>Site rebuilt for self-hosting &mdash; no longer on Wix.</span>
     </div>
   </div>
 </footer>

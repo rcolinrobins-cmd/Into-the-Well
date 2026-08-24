@@ -189,4 +189,134 @@
 
     applyClassFilter("all");
   }
+
+  /* ---------- Instructor bio modal (instructors.html) ----------
+   * window.INSTRUCTOR_DATA is embedded by generator/pages.py — one entry
+   * per instructor, each with a full bio, specialties, and a list of
+   * typical weekly class slots (day + time + class name). "Upcoming
+   * Classes" isn't baked into the HTML as fixed dates, which would be
+   * wrong the day after deploy — instead nextTwoWeekOccurrences() works
+   * out the actual calendar dates for each weekly slot, relative to
+   * whichever day the page happens to be viewed. An instructor with no
+   * slots (an ownership or guest role, not a weekly class) gets a
+   * different message instead of a fabricated schedule.
+   */
+  var instructorModal = document.querySelector("[data-instructor-modal]");
+  var instructorData = window.INSTRUCTOR_DATA;
+  if (instructorModal && instructorData) {
+    var modalPhoto = instructorModal.querySelector("[data-modal-photo]");
+    var modalName = instructorModal.querySelector("[data-modal-name]");
+    var modalRole = instructorModal.querySelector("[data-modal-role]");
+    var modalBio = instructorModal.querySelector("[data-modal-bio]");
+    var modalSpecialties = instructorModal.querySelector(
+      "[data-modal-specialties]"
+    );
+    var modalScheduleNote = instructorModal.querySelector(
+      "[data-modal-schedule-note]"
+    );
+    var modalSchedule = instructorModal.querySelector("[data-modal-schedule]");
+    var modalCloseBtn = instructorModal.querySelector("[data-modal-close]");
+    var lastInstructorTrigger = null;
+
+    var WEEKDAY_INDEX = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+
+    var nextTwoWeekOccurrences = function (dayAbbr) {
+      var targetDay = WEEKDAY_INDEX[dayAbbr];
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+      var found = [];
+      for (var i = 0; i < 14; i++) {
+        var d = new Date(today);
+        d.setDate(d.getDate() + i);
+        if (d.getDay() === targetDay) found.push(d);
+      }
+      return found;
+    };
+
+    var formatClassDate = function (d) {
+      return d.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      });
+    };
+
+    var openInstructorModal = function (data, trigger) {
+      lastInstructorTrigger = trigger;
+
+      modalPhoto.innerHTML =
+        '<div class="img-placeholder" role="img" aria-label="Placeholder: ' +
+        data.name +
+        '" style="aspect-ratio:1/1; border-radius:50%;"><span>📷 ' +
+        data.name +
+        "<br><small>Replace with real photo</small></span></div>";
+      modalName.textContent = data.name;
+      modalRole.textContent = data.role;
+      modalBio.textContent = data.bio;
+      modalSpecialties.innerHTML = data.specialties
+        .map(function (s) {
+          return '<li><span class="badge">' + s + "</span></li>";
+        })
+        .join("");
+
+      if (data.slots.length === 0) {
+        modalScheduleNote.textContent =
+          "No regular weekly classes on the schedule right now — check Workshops & Events for upcoming sessions with " +
+          data.name.split(" ")[0] +
+          ".";
+        modalSchedule.innerHTML = "";
+      } else {
+        modalScheduleNote.textContent =
+          "Sample schedule for the next two weeks, based on a placeholder weekly time slot — connect a real booking calendar to show live class times.";
+        var rows = [];
+        data.slots.forEach(function (slot) {
+          nextTwoWeekOccurrences(slot.day).forEach(function (date) {
+            rows.push({ date: date, time: slot.time, className: slot.className });
+          });
+        });
+        rows.sort(function (a, b) {
+          return a.date - b.date;
+        });
+        modalSchedule.innerHTML = rows
+          .map(function (r) {
+            return (
+              '<li><span class="instructor-modal__schedule-date">' +
+              formatClassDate(r.date) +
+              " · " +
+              r.time +
+              "</span><span>" +
+              r.className +
+              "</span></li>"
+            );
+          })
+          .join("");
+      }
+
+      instructorModal.showModal();
+    };
+
+    document
+      .querySelectorAll("[data-instructor-trigger]")
+      .forEach(function (trigger) {
+        trigger.addEventListener("click", function () {
+          var idx = Number(trigger.getAttribute("data-instructor-trigger"));
+          openInstructorModal(instructorData[idx], trigger);
+        });
+      });
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", function () {
+        instructorModal.close();
+      });
+    }
+    // Click on the ::backdrop registers as a click on the <dialog> element
+    // itself (its only child, .instructor-modal__inner, fills the whole
+    // box with padding, so any in-content click targets that instead).
+    instructorModal.addEventListener("click", function (e) {
+      if (e.target === instructorModal) instructorModal.close();
+    });
+    instructorModal.addEventListener("close", function () {
+      if (lastInstructorTrigger) lastInstructorTrigger.focus();
+    });
+  }
 })();

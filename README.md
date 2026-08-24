@@ -48,7 +48,7 @@ Into-the-Well/
 4. **Pick a payment provider** for membership billing (Stripe Billing, or your booking provider's built-in billing) and wire it to the "Choose Plan" buttons on `pricing.html`.
 5. **Wire up gift card sales** on `gift-card.html` (Stripe, Square, or your booking provider).
 6. **Wire up the contact form** on `contact.html` to an email or form service (Formspree, Netlify Forms, etc.) — right now it doesn't submit anywhere.
-7. **Fill in placeholder copy**: instructor bios and individual class descriptions weren't published as text on the live site, so those sections currently have neutral placeholder drafts — swap in the studio's real voice. Studio hours also aren't published anywhere and need to be added.
+7. **Fill in placeholder copy**: instructor bios and individual class descriptions weren't published as text on the live site, so those sections currently have neutral placeholder drafts — swap in the studio's real voice. Each instructor's bio modal (click "Read more" on `instructors.html`) also shows a sample "Upcoming Classes" schedule computed from a made-up weekly time slot per instructor, not real booking data — see the `.notice` on that page, and connect a real booking calendar before launch. Studio hours also aren't published anywhere and need to be added.
 8. **Verify address/phone/hours** are current, then deploy.
 
 All of these are also flagged inline as dashed `.notice` boxes directly on the relevant pages, so nothing here is hidden — just search each file for `class="notice"`.

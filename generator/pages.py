@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 from build_site import (
     write, placeholder, ICON_CHEVRON, ICON_PIN, ICON_PHONE, ICON_MAIL,
     PHONE, PHONE_TEL, EMAIL, ADDRESS, MAPS_URL, TAGLINE,
@@ -194,18 +195,114 @@ write(
 )
 
 # ---------------------------------------------------------------- INSTRUCTORS
+# bio_short is truncated to 2 lines by CSS (line-clamp), so it just needs to
+# be long enough to always overflow — bio_full is the complete bio shown in
+# the modal. slots are an instructor's typical weekly class times, used to
+# compute real calendar dates for "the next two weeks" client-side (see
+# js/main.js) rather than baking specific dates into the HTML, which would
+# go stale the moment the site is deployed. An empty slots list means this
+# person doesn't teach a regular weekly class (e.g. ownership/guest roles) —
+# the modal shows a different message for those instead of a fake schedule.
 INSTRUCTORS = [
-    ("Ellen James", "Founder / Owner & Instructor"),
-    ("Christina Robins", "Owner / Operations"),
-    ("Chelsea B", "Instructor"),
-    ("Patti C", "Instructor"),
-    ("Danielle T", "Instructor"),
-    ("Sydney F", "Instructor"),
-    ("Ashtyn N", "Instructor"),
-    ("Trisha K", "Instructor"),
-    ("Hannah F", "Instructor"),
-    ("Jamie R", "Guest Instructor"),
-    ("Meredith S", "Guest Instructor"),
+    {
+        "name": "Ellen James",
+        "role": "Founder / Owner & Instructor",
+        "bio_short": "Ellen founded Into The Well Collective to build a studio where every body feels welcome, blending years of vinyasa and restorative teaching with a deep love of community.",
+        "bio_full": "Ellen founded Into The Well Collective to build a studio where every body feels welcome, blending years of vinyasa and restorative teaching with a deep love of community. She's passionate about accessible movement, trauma-informed cueing, and creating a space that feels like a soft place to land — on the mat and off it. When she's not teaching, she's usually planning the studio's next community event.",
+        "specialties": ["Vinyasa", "Restorative Yoga", "Studio Leadership"],
+        "slots": [("Mon", "6:00 PM", "Vinyasa Flow"), ("Thu", "9:30 AM", "Restorative Yoga")],
+    },
+    {
+        "name": "Christina Robins",
+        "role": "Owner / Operations",
+        "bio_short": "Christina keeps the studio running behind the scenes — from scheduling to community partnerships — so every class feels effortless from the moment you walk in.",
+        "bio_full": "Christina keeps the studio running behind the scenes — from scheduling to community partnerships — so every class feels effortless from the moment you walk in. She works closely with instructors and members alike to make sure Into The Well stays a warm, well-organized home base for movement and connection in Garland.",
+        "specialties": ["Operations", "Community Partnerships", "Member Experience"],
+        "slots": [],
+    },
+    {
+        "name": "Chelsea B",
+        "role": "Instructor",
+        "bio_short": "Chelsea brings high energy and a love of rhythm to every barre class, focused on strength, stability, and celebrating what your body can do.",
+        "bio_full": "Chelsea brings high energy and a love of rhythm to every barre class, focused on strength, stability, and celebrating what your body can do. Her classes mix ballet-inspired micro-movements with light resistance work, and she's known for playlists that make the burn worth it.",
+        "specialties": ["Barre", "Sculpt"],
+        "slots": [("Tue", "5:30 PM", "Barre"), ("Sat", "10:00 AM", "Barre Sculpt")],
+    },
+    {
+        "name": "Patti C",
+        "role": "Instructor",
+        "bio_short": "Patti's pilates classes are all about control, core strength, and moving with intention — approachable for beginners, challenging for anyone ready to go deeper.",
+        "bio_full": "Patti's pilates classes are all about control, core strength, and moving with intention — approachable for beginners, challenging for anyone ready to go deeper. She draws on classical pilates fundamentals and adapts every sequence to the bodies in the room, with modifications always on offer.",
+        "specialties": ["Pilates", "Core Strength"],
+        "slots": [("Wed", "8:00 AM", "Pilates"), ("Fri", "12:00 PM", "Pilates")],
+    },
+    {
+        "name": "Danielle T",
+        "role": "Instructor",
+        "bio_short": "Danielle teaches power-driven vinyasa flows built to build heat, strength, and focus — a class for anyone who wants their yoga practice to feel like a workout.",
+        "bio_full": "Danielle teaches power-driven vinyasa flows built to build heat, strength, and focus — a class for anyone who wants their yoga practice to feel like a workout. Expect creative sequencing, strong core work, and plenty of encouragement to find your edge, whatever that looks like on a given day.",
+        "specialties": ["Power Flow", "Strength"],
+        "slots": [("Mon", "5:30 PM", "Power Flow"), ("Thu", "6:30 PM", "Power Flow")],
+    },
+    {
+        "name": "Sydney F",
+        "role": "Instructor",
+        "bio_short": "Sydney's classes slow things down — long holds, deep stretches, and space to actually feel what's happening in your body instead of rushing past it.",
+        "bio_full": "Sydney's classes slow things down — long holds, deep stretches, and space to actually feel what's happening in your body instead of rushing past it. Her slow flow and deep stretch classes are a favorite for anyone managing stress, tight hips, or just craving a little quiet.",
+        "specialties": ["Slow Flow", "Deep Stretch"],
+        "slots": [("Tue", "7:00 PM", "Slow Flow"), ("Sun", "4:00 PM", "Deep Stretch Yoga")],
+    },
+    {
+        "name": "Ashtyn N",
+        "role": "Instructor",
+        "bio_short": "Ashtyn loves introducing newer students to the practice, and her beginner-friendly yoga and yin/vin classes make space for questions, modifications, and progress at your own pace.",
+        "bio_full": "Ashtyn loves introducing newer students to the practice, and her beginner-friendly yoga and yin/vin classes make space for questions, modifications, and progress at your own pace. She's especially passionate about breathwork and helping first-timers feel confident on the mat.",
+        "specialties": ["Beginner's Yoga", "Yin/Vin"],
+        "slots": [("Wed", "6:00 PM", "Beginner's Yoga"), ("Sat", "9:00 AM", "Yin/Vin")],
+    },
+    {
+        "name": "Trisha K",
+        "role": "Instructor",
+        "bio_short": "Trisha's barre classes are equal parts precision and fun — expect tiny pulses, big smiles, and a full-body burn by the final track.",
+        "bio_full": "Trisha's barre classes are equal parts precision and fun — expect tiny pulses, big smiles, and a full-body burn by the final track. She's big on form cues and celebrates every shaky-legs moment as a sign you're doing it right.",
+        "specialties": ["Barre"],
+        "slots": [("Mon", "9:00 AM", "Barre"), ("Sat", "11:00 AM", "Weekend Barre")],
+    },
+    {
+        "name": "Hannah F",
+        "role": "Instructor",
+        "bio_short": "Hannah teaches pilates with a focus on breath, alignment, and building strength from the inside out — grounded, precise, and always encouraging.",
+        "bio_full": "Hannah teaches pilates with a focus on breath, alignment, and building strength from the inside out — grounded, precise, and always encouraging. Her classes are a great fit whether you're brand new to pilates or looking to refine your practice.",
+        "specialties": ["Pilates"],
+        "slots": [("Tue", "9:00 AM", "Pilates"), ("Sun", "10:00 AM", "Weekend Pilates")],
+    },
+    {
+        "name": "Jamie R",
+        "role": "Guest Instructor",
+        "bio_short": "Jamie joins us for special workshops and sound healing sessions, bringing a calming presence and a gift for helping people slow down and reset.",
+        "bio_full": "Jamie joins us for special workshops and sound healing sessions, bringing a calming presence and a gift for helping people slow down and reset. Look for Jamie on the schedule during our seasonal workshop series and Free For Members events.",
+        "specialties": ["Workshops", "Sound Healing"],
+        "slots": [],
+    },
+    {
+        "name": "Meredith S",
+        "role": "Guest Instructor",
+        "bio_short": "Meredith leads our Women's Wellness Series, creating space to talk openly about nervous system health, nutrition, and what it really means to care for yourself.",
+        "bio_full": "Meredith leads our Women's Wellness Series, creating space to talk openly about nervous system health, nutrition, and what it really means to care for yourself. Her sessions blend gentle movement with honest conversation — no perfection required.",
+        "specialties": ["Women's Wellness", "Nervous System Health"],
+        "slots": [],
+    },
+]
+
+instructor_modal_data = [
+    {
+        "name": i["name"],
+        "role": i["role"],
+        "bio": i["bio_full"],
+        "specialties": i["specialties"],
+        "slots": [{"day": d, "time": t, "className": c} for d, t, c in i["slots"]],
+    }
+    for i in INSTRUCTORS
 ]
 
 instructors_body = f"""
@@ -218,19 +315,36 @@ instructors_body = f"""
 </section>
 <section class="section">
   <div class="container">
-    {NOTICE.format("Individual bios weren't published on the live site beyond name and role &mdash; add a short bio for each instructor below.")}
+    {NOTICE.format("Individual bios weren't published on the live site beyond name and role &mdash; the bios below are placeholder drafts, and each instructor's &ldquo;Upcoming Classes&rdquo; is a sample schedule computed from a made-up weekly time slot, not a real booking calendar. Swap in real copy and connect real scheduling data before launch.")}
     <h2 class="visually-hidden">Meet the team</h2>
     <div class="grid grid--4 mt-6">
       {"".join(f'''<article class="card instructor-card">
-        {placeholder(name, ratio="1/1")}
-        <h3>{name}</h3>
-        <p class="badge">{role}</p>
-        <p class="text-muted">Bio coming soon.</p>
-      </article>''' for name, role in INSTRUCTORS)}
+        {placeholder(i["name"], ratio="1/1")}
+        <h3>{i["name"]}</h3>
+        <p class="badge">{i["role"]}</p>
+        <p class="instructor-card__bio">{i["bio_short"]}</p>
+        <button type="button" class="link-more" data-instructor-trigger="{idx}">Read more<span class="visually-hidden"> about {i["name"]}</span></button>
+      </article>''' for idx, i in enumerate(INSTRUCTORS))}
     </div>
     {membership_nudge("Found your favorite instructor? <strong>Unlimited classes start at $69/mo</strong>, plus 20% off every workshop.")}
   </div>
 </section>
+
+<dialog class="instructor-modal" data-instructor-modal aria-labelledby="instructor-modal-name">
+  <div class="instructor-modal__inner">
+    <button type="button" class="instructor-modal__close btn btn--sm btn--secondary" data-modal-close autofocus aria-label="Close">Close &#10005;</button>
+    <div class="instructor-modal__photo" data-modal-photo></div>
+    <h2 id="instructor-modal-name" data-modal-name></h2>
+    <p class="badge" data-modal-role></p>
+    <p data-modal-bio></p>
+    <h3>Specialties</h3>
+    <ul class="instructor-modal__tags" data-modal-specialties></ul>
+    <h3>Upcoming Classes</h3>
+    <p class="text-muted" data-modal-schedule-note></p>
+    <ul class="instructor-modal__schedule" data-modal-schedule></ul>
+  </div>
+</dialog>
+<script>window.INSTRUCTOR_DATA = {json.dumps(instructor_modal_data)};</script>
 """
 write(
     "instructors.html",
