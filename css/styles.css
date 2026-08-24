@@ -53,7 +53,11 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
-  color: var(--color-charcoal);
+  /* terracotta-dk, not charcoal: matches the source site's coral headline
+     color. Plain --color-terracotta is too light to stay AA-safe once a
+     heading sits on the --color-blush hero gradient (only 2.4:1) — see
+     design-system.md. -dk clears 4.7:1 even there. */
+  color: var(--color-terracotta-dk);
 }
 h1 { font-size: var(--fs-2xl); }
 h2 { font-size: var(--fs-xl); }
@@ -228,7 +232,7 @@ h3 { font-size: var(--fs-lg); }
   border-radius: var(--radius-sm);
 }
 .nav__toggle svg { width: 26px; height: 26px; }
-@media (min-width: 960px) {
+@media (min-width: 1180px) {
   .nav__toggle { display: none; }
 }
 .nav__menu {
@@ -301,7 +305,7 @@ h3 { font-size: var(--fs-lg); }
 }
 .nav__scrim.is-open { opacity: 1; pointer-events: auto; }
 
-@media (min-width: 960px) {
+@media (min-width: 1180px) {
   .nav__menu {
     position: relative; /* positioning context for .nav__indicator */
     width: auto;
@@ -314,7 +318,7 @@ h3 { font-size: var(--fs-lg); }
     padding: 0;
     flex-direction: row;
     align-items: center;
-    gap: var(--space-6); /* was space-5 — more breathing room between links */
+    gap: var(--space-5); /* was space-6 — 7 links + CTA need the room back */
     transform: none;
     overflow: visible;
   }
@@ -324,6 +328,8 @@ h3 { font-size: var(--fs-lg); }
     border-bottom: none;
     font-size: var(--fs-sm); /* was fs-base — slightly smaller, per request */
     position: relative;
+    white-space: nowrap; /* never let a link like "Rent The Space" wrap mid-phrase */
+    flex-shrink: 0;
   }
   .nav__indicator { display: block; }
   .nav__close, .nav__scrim { display: none; }
@@ -343,7 +349,13 @@ h3 { font-size: var(--fs-lg); }
   margin-top: calc(-1 * var(--header-height));
   padding-top: calc(var(--space-8) + var(--header-height));
   padding-bottom: var(--space-7);
-  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 100%);
+  /* Fixed-length fade (not a 0%/100% stop) so this reads the same on every
+     page: .hero--sub is ~366px tall, but the home page's .hero also wraps
+     the hero image and runs 3x taller, so a 0%-100% gradient stretched to
+     fill it stayed pink/blush far longer than on any other page. Anchoring
+     the fade to an absolute distance from the top makes it fade out at the
+     same point everywhere, regardless of how tall the hero ends up being. */
+  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 380px, var(--color-cream) 100%);
   text-align: center;
 }
 .hero h1 {

@@ -15,18 +15,21 @@ Built **mobile-first**: every layout starts as a single column and adds columns/
 
 | Token | Hex | Use |
 |---|---|---|
-| `--color-cream` | `#FAF6F0` | Page background |
-| `--color-cream-deep` | `#F1E9DC` | Alternating section background |
-| `--color-charcoal` | `#2E2A26` | Primary text (13.6:1 on cream) |
-| `--color-charcoal-soft` | `#5C554D` | Secondary text (6.8:1 on cream) |
-| `--color-terracotta` | `#B85C3E` | Primary accent / CTAs (4.6:1 on cream) |
+| `--color-cream` | `#FCFAF6` | Page background |
+| `--color-cream-deep` | `#F3EDE2` | Alternating section background |
+| `--color-charcoal` | `#003562` | Primary text (13.7:1 on cream) |
+| `--color-charcoal-soft` | `#2E5675` | Secondary text (7.8:1 on cream, 4.8:1 on blush) |
+| `--color-terracotta` | `#D03D11` | Primary accent / CTAs (4.8:1 on cream) |
+| `--color-terracotta-dk` | `#9B2A08` | Headings, hover/active, small text (7.7:1 on cream, 4.7:1 on blush) |
 | `--color-sage` | `#6E7B5C` | Secondary accent (5.3:1 on cream) |
 | `--color-gold` | `#B08A3E` | Sparing highlight (badges) |
 | `--color-blush` / `--color-sage-pale` | — | Soft section/callout backgrounds |
 
-All text/background pairings above meet WCAG AA (4.5:1) at body text size. If you swap in real brand colors, re-check contrast — a contrast checker takes 30 seconds and prevents an accessibility regression.
+All text/background pairings above meet WCAG AA (4.5:1 for normal text, 3:1 for large text) at the sizes they're actually used at. If you change any of these hex values, re-check contrast — a contrast checker takes 30 seconds and prevents an accessibility regression.
 
-**This palette is a placeholder**, chosen to fit a warm, inclusive wellness-studio feel since the real brand colors weren't recoverable from the old Wix site (see README). Swap the hex values in `tokens.css` for your actual brand palette whenever you have it — every component will re-theme automatically.
+**This palette is calibrated to match the real intothewellcollective.com** (a Wix site — see README on why we couldn't just copy its code). Its live CSS exposes the brand's actual theme colors as CSS custom properties (`--color_NN: r,g,b`), which is how these were sourced: navy `rgb(0,53,98)` for body copy, nav "active" state, and buttons; coral `rgb(255,141,107)` for headline emphasis; a near-white page background; and a dusty blush `rgb(233,194,184)` used for soft section backgrounds.
+
+`--color-charcoal` and `--color-blush` use those exact source-site values. The raw brand coral does not: at `rgb(255,141,107)` it's only ~2.3:1 against white, which fails WCAG AA even for large headline text (needs 3:1) — the live site simply isn't AA-compliant there. `--color-terracotta`/`--color-terracotta-dk` keep the same ~14° hue but are darkened and saturated until they clear AA in every place this codebase actually uses them: as heading text sitting on the `--color-blush` hero gradient (worst case), as white-on-color button fills, and as white text inside `.callout--terracotta`. Headings (`h1`–`h3`) use `--color-terracotta-dk` rather than the brighter `--color-terracotta` for the same reason the `.eyebrow` class already did before this change — see the comment above the `h1, h2, h3` rule in `styles.css`.
 
 ## Typography
 
@@ -43,7 +46,7 @@ All text/background pairings above meet WCAG AA (4.5:1) at body text size. If yo
 
 - **Buttons** (`.btn`, `.btn--primary`, `.btn--secondary`, `.btn--on-dark`) — pill-shaped, 44px minimum height for touch targets, horizontal padding driven by the `--btn-padding-x`/`--btn-padding-y` custom properties (32px/12px by default, never below the 8–12px floor — see the button bug note below). `flex-shrink: 0` and `white-space: nowrap` are permanent on `.btn` — a button's label never wraps or gets compressed, in a flex row or anywhere else.
 - **Cards** (`.card`) — used for classes, instructors, pricing plans (`.plan-card`), events, and partners. All are grid children with `min-width: 0` set deliberately — removing that can reintroduce the overflow bug described below.
-- **Nav** (`.site-header`, `.nav__menu`) — transparent header at rest (no background fill); once the page scrolls past a small offset, `main.js` adds `.is-scrolled`, which brings in a light tint + blur purely so nav text stays legible over whatever content is passing underneath — still not a solid/white bar. Off-canvas slide-in menu below 960px, inline row above it. Current nav item is marked via `data-page` on `<body>` + JS. Desktop nav links share a single animated underline (`.nav__indicator`) that `main.js` slides/resizes to whichever link is hovered or focused, and glides back to the current page's link on mouseleave — see `js/main.js`. Brand mark in the nav reads the short form "Into the Well"; the full name "Into The Well Collective" (`SITE_NAME` in `generator/build_site.py`) is still used everywhere else — page titles, meta description, footer, social `aria-label`s.
+- **Nav** (`.site-header`, `.nav__menu`) — transparent header at rest (no background fill); once the page scrolls past a small offset, `main.js` adds `.is-scrolled`, which brings in a light tint + blur purely so nav text stays legible over whatever content is passing underneath — still not a solid/white bar. Off-canvas slide-in menu below 1180px, inline row above it (raised from an earlier 960px — that width couldn't fit the brand, all 7 nav links, and the CTA without cramping or wrapping; see the nav breakpoint note below). Current nav item is marked via `data-page` on `<body>` + JS. Desktop nav links share a single animated underline (`.nav__indicator`) that `main.js` slides/resizes to whichever link is hovered or focused, and glides back to the current page's link on mouseleave — see `js/main.js`. Brand mark in the nav reads the short form "Into the Well"; the full name "Into The Well Collective" (`SITE_NAME` in `generator/build_site.py`) is still used everywhere else — page titles, meta description, footer, social `aria-label`s.
 - **Accordion** (`.accordion-item`, used on `faqs.html`) — accessible via `aria-expanded`, keyboard-operable (native `<button>`).
 - **Image placeholders** (`.img-placeholder`) — the diagonal-striped boxes throughout the site mark where a real photo should go. Search for `img-placeholder` across the HTML files to find every spot.
 - **Notices** (`.notice`) — dashed terracotta boxes flagging things that need a decision or integration before launch (payment provider, booking widget, form backend, etc.). Search for `class="notice"` to find every one and resolve them before going live.
@@ -58,7 +61,11 @@ The nav's "Book a Class" button once looked cramped — its label crowded right 
 
 ## A "white nav bar" bug worth knowing about
 
-The header looked solid white even after `.site-header` was set to `background: transparent`, because `.nav__menu` — the same element used as the mobile off-canvas drawer — has its own `background: var(--color-white)` (the drawer needs an opaque panel to slide in). The `min-width: 960px` media query that turns that drawer back into an inline desktop row reset its position/size/shadow/padding, but never reset `background`, so the drawer's white fill kept showing through as a solid box behind the desktop links and CTA. Fixed by explicitly setting `background: transparent` on `.nav__menu` inside that desktop media query. If `.nav__menu` ever needs another mobile-only visual property, mirror the same pattern: anything set for the off-canvas drawer must be explicitly undone in the desktop override, not assumed to fall away on its own.
+The header looked solid white even after `.site-header` was set to `background: transparent`, because `.nav__menu` — the same element used as the mobile off-canvas drawer — has its own `background: var(--color-white)` (the drawer needs an opaque panel to slide in). The `min-width` media query (`1180px`, was `960px` at the time of this bug) that turns that drawer back into an inline desktop row reset its position/size/shadow/padding, but never reset `background`, so the drawer's white fill kept showing through as a solid box behind the desktop links and CTA. Fixed by explicitly setting `background: transparent` on `.nav__menu` inside that desktop media query. If `.nav__menu` ever needs another mobile-only visual property, mirror the same pattern: anything set for the off-canvas drawer must be explicitly undone in the desktop override, not assumed to fall away on its own.
+
+## A cramped desktop nav worth knowing about
+
+The desktop nav (brand + 7 links + CTA button) used to switch on at `min-width: 960px`, but there isn't enough room for all of that in one row until closer to 1180px — between those two widths the links were squeezed tight enough that "Rent The Space" wrapped onto two lines and the gap after the brand text collapsed. Fixed by raising the breakpoint to `1180px` in both `styles.css` (two `@media` blocks: the `.nav__toggle` visibility rule and the desktop `.nav__menu` layout rule) and `main.js` (the `matchMedia` call driving the hover/focus underline). If you add or remove a nav link, these three spots need to move together, and it's worth re-checking the nav at a few widths just above and below the breakpoint.
 
 ## Known placeholders / not-yet-wired functionality
 

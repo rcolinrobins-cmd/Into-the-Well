@@ -93,7 +93,7 @@
   var indicator = document.querySelector(".nav__indicator");
   var navLinks = menu ? Array.prototype.slice.call(menu.querySelectorAll("[data-nav-links] a")) : [];
   if (indicator && navLinks.length) {
-    var desktopMq = window.matchMedia("(min-width: 960px)");
+    var desktopMq = window.matchMedia("(min-width: 1180px)");
 
     var moveIndicatorTo = function (el) {
       if (!el || !desktopMq.matches) {
