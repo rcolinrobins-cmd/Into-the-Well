@@ -18,11 +18,18 @@
   --color-cream:        #FCFAF6; /* primary page background — near-white, matches source site */
   --color-cream-deep:   #F3EDE2; /* alternate section background */
   --color-white:        #FFFFFF;
-  --color-black:        #1A1A1A; /* headings — a web-friendly near-black, not pure #000 */
-  --color-charcoal:     #003562; /* primary text — source site's exact navy body-copy color, 13.7:1 on cream */
+  --color-charcoal:     #003562; /* primary text, headings, and CTA text — source site's exact navy body-copy color, 13.7:1 on cream */
   --color-charcoal-soft:#2E5675; /* secondary text — lighter navy, same hue family, 7.8:1 on cream, 4.8:1 on blush */
-  --color-terracotta:   #D03D11; /* primary accent / CTA — vivid coral-red, ~14° hue (matches source site's coral), 4.8:1 on cream */
+  --color-terracotta:   #D03D11; /* accent — vivid coral-red, ~14° hue (matches source site's coral), 4.8:1 on cream. No longer the CTA fill color — see --color-cta below — but still used for badges, borders, and hover-state link color. */
   --color-terracotta-dk:#9B2A08; /* hover/active state, small text, badges, price accents — 7.7:1 on cream, 4.7:1 on blush */
+  /* CTA button fill — a lighter, warmer coral than --color-terracotta.
+     #EF8964 itself is too light for white text (~2.5:1, fails AA), so the
+     button pairs it with --color-charcoal (navy) text at rest, then
+     switches to white once the fill darkens to --color-cta-dk on hover —
+     same "raw brand color fails, so text color/shade adapts" approach
+     used for --color-terracotta/-dk above. */
+  --color-cta:          #EF8964; /* CTA fill at rest — pairs with --color-charcoal text, 5.0:1 */
+  --color-cta-dk:       #995840; /* CTA fill on hover — pairs with white text, 5.5:1 */
   --color-sage:         #6E7B5C; /* secondary accent — 5.3:1 on cream */
   --color-sage-dk:      #57624A; /* hover/active state */
   --color-sage-pale:    #E4E9DD; /* soft accent background */

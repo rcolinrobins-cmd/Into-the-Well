@@ -56,7 +56,7 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
-  color: var(--color-black); /* web-friendly near-black, not the accent red */
+  color: var(--color-charcoal); /* same navy as body copy, not the accent red */
 }
 h1 { font-size: var(--fs-2xl); }
 h2 { font-size: var(--fs-xl); }
@@ -143,10 +143,13 @@ h3 { font-size: var(--fs-lg); }
 }
 .btn:active { transform: translateY(1px); }
 .btn--primary {
-  background: var(--color-terracotta);
-  color: var(--color-white);
+  /* --color-cta is too light for white text — dark navy text at rest,
+     then white once the fill darkens to --color-cta-dk on hover (both
+     legs verified AA, see tokens.css). */
+  background: var(--color-cta);
+  color: var(--color-charcoal);
 }
-.btn--primary:hover { background: var(--color-terracotta-dk); }
+.btn--primary:hover { background: var(--color-cta-dk); color: var(--color-white); }
 .btn--secondary {
   background: transparent;
   border-color: var(--color-charcoal);
@@ -690,7 +693,16 @@ h3 { font-size: var(--fs-lg); }
 }
 .callout h2, .callout .lead { color: var(--color-white); }
 .callout .lead { opacity: 0.92; }
-.callout--terracotta { background: var(--color-terracotta); }
+/* Matches the primary button's fill exactly — same reasoning applies:
+   --color-cta is too light for white text, so this variant overrides the
+   base .callout's white text back to navy. */
+.callout--terracotta {
+  background: var(--color-cta);
+}
+.callout--terracotta h2, .callout--terracotta .lead {
+  color: var(--color-charcoal);
+  opacity: 1;
+}
 
 /* Contact / form */
 .form-field { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-4); }
