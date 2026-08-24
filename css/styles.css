@@ -143,13 +143,13 @@ h3 { font-size: var(--fs-lg); }
 }
 .btn:active { transform: translateY(1px); }
 .btn--primary {
-  /* --color-cta is too light for white text — dark navy text at rest,
-     then white once the fill darkens to --color-cta-dk on hover (both
-     legs verified AA, see tokens.css). */
+  /* --color-cta is too light for white text — dark navy text at rest
+     (verified AA, see tokens.css); hover matches .btn--secondary's navy
+     fill/white text so every button darkens to the same navy on hover. */
   background: var(--color-cta);
   color: var(--color-charcoal);
 }
-.btn--primary:hover { background: var(--color-cta-dk); color: var(--color-white); }
+.btn--primary:hover { background: var(--color-charcoal); color: var(--color-white); }
 .btn--secondary {
   background: transparent;
   border-color: var(--color-charcoal);
@@ -264,7 +264,7 @@ h3 { font-size: var(--fs-lg); }
   bottom: -1px;
   height: 2px;
   width: 0;
-  background: var(--color-terracotta-dk);
+  background: var(--color-charcoal);
   border-radius: var(--radius-pill);
   opacity: 0;
   transform: translateX(0);
