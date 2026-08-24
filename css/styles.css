@@ -56,11 +56,7 @@ h1, h2, h3, .font-display {
   font-family: var(--font-display);
   font-weight: var(--fw-semibold);
   line-height: var(--lh-tight);
-  /* terracotta-dk, not charcoal: matches the source site's coral headline
-     color. Plain --color-terracotta is too light to stay AA-safe once a
-     heading sits on the --color-blush hero gradient (only 2.4:1) — see
-     design-system.md. -dk clears 4.7:1 even there. */
-  color: var(--color-terracotta-dk);
+  color: var(--color-black); /* web-friendly near-black, not the accent red */
 }
 h1 { font-size: var(--fs-2xl); }
 h2 { font-size: var(--fs-xl); }
@@ -337,8 +333,9 @@ h3 { font-size: var(--fs-lg); }
      the hero image and runs 3x taller, so a 0%-100% gradient stretched to
      fill it stayed pink/blush far longer than on any other page. Anchoring
      the fade to an absolute distance from the top makes it fade out at the
-     same point everywhere, regardless of how tall the hero ends up being. */
-  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-cream) 380px, var(--color-cream) 100%);
+     same point everywhere, regardless of how tall the hero ends up being.
+     Fades to solid white (not --color-cream) within 180px. */
+  background: linear-gradient(180deg, var(--color-blush) 0%, var(--color-white) 180px, var(--color-white) 100%);
   text-align: center;
 }
 .hero h1 {

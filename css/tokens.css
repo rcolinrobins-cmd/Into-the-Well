@@ -18,19 +18,20 @@
   --color-cream:        #FCFAF6; /* primary page background — near-white, matches source site */
   --color-cream-deep:   #F3EDE2; /* alternate section background */
   --color-white:        #FFFFFF;
+  --color-black:        #1A1A1A; /* headings — a web-friendly near-black, not pure #000 */
   --color-charcoal:     #003562; /* primary text — source site's exact navy body-copy color, 13.7:1 on cream */
   --color-charcoal-soft:#2E5675; /* secondary text — lighter navy, same hue family, 7.8:1 on cream, 4.8:1 on blush */
   --color-terracotta:   #D03D11; /* primary accent / CTA — vivid coral-red, ~14° hue (matches source site's coral), 4.8:1 on cream */
-  --color-terracotta-dk:#9B2A08; /* headings, hover/active, small text — 7.7:1 on cream, 4.7:1 on blush */
+  --color-terracotta-dk:#9B2A08; /* hover/active state, small text, badges, price accents — 7.7:1 on cream, 4.7:1 on blush */
   --color-sage:         #6E7B5C; /* secondary accent — 5.3:1 on cream */
   --color-sage-dk:      #57624A; /* hover/active state */
   --color-sage-pale:    #E4E9DD; /* soft accent background */
   --color-gold:         #B08A3E; /* decorative use only — fails AA for text, see --color-gold-dk */
   --color-gold-dk:      #8A6B2E; /* use behind white text (badges) — 4.97:1 */
-  --color-blush:        #E9C2B8; /* soft accent background, alt — matches source site's blush accent */
+  --color-blush:        #ECE0D2; /* hero gradient start color, soft section/notice backgrounds */
   --color-border:       #E4DACB; /* hairlines, card borders */
-  --color-header-bg:    #F2F2F0; /* nav header background — neutral grey, deliberately not warm-tinted like --color-cream */
-  --color-header-border:#E1E1DD; /* hairline under the header, matched to --color-header-bg's neutral grey rather than the warmer --color-border */
+  --color-header-bg:    #F8F8F7; /* nav header background — very light neutral grey, barely off-white */
+  --color-header-border:#EDEDEA; /* hairline under the header, matched lighter to --color-header-bg */
   --color-focus:        #1C6E5C; /* focus ring — distinct from brand accents, 3:1+ vs bg */
 
   /* ---- Typography ----
