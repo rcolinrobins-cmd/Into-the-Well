@@ -408,8 +408,31 @@ h3 { font-size: var(--fs-lg); }
 .plan-card__price { font-family: var(--font-display); font-size: var(--fs-xl); color: var(--color-terracotta-dk); }
 .plan-card__price span { font-family: var(--font-body); font-size: var(--fs-sm); font-weight: var(--fw-regular); color: var(--color-charcoal-soft); }
 
-/* Class / event card */
+/* Class / event card — every .class-card in a grid should read as the same
+   size with its photo/name/price/description all starting at the same
+   height, even though grid rows only stretch cards to match *their own
+   row's* tallest card, not the whole page. Fixed-height reserves on the
+   name and description (rather than relying on however much text happens
+   to be there) are what actually make every row line up with every other
+   row, not just the cards within one row. */
 .class-card__meta { display: flex; gap: var(--space-3); font-size: var(--fs-sm); color: var(--color-sage-dk); font-weight: var(--fw-medium); }
+.class-card h3 {
+  /* Reserves 2 lines so a short name (e.g. "Barre") and a long one that
+     wraps (e.g. "Naptime: A Restorative Practice") both leave the price
+     starting at the same spot underneath. */
+  min-height: calc(var(--lh-tight) * var(--fs-lg) * 2);
+}
+.class-card .text-muted {
+  /* Reserves 3 lines regardless of actual description length, so the CTA
+     button (pinned to the bottom below) lines up across every card. */
+  min-height: calc(var(--lh-normal) * 3em);
+}
+.class-card .btn {
+  /* Pins the CTA to the card's bottom edge and stretches it edge-to-edge,
+     regardless of how much space the content above happened to use. */
+  margin-top: auto;
+  width: 100%;
+}
 
 /* Instructor card */
 .instructor-card { text-align: center; align-items: center; }
