@@ -21,10 +21,10 @@ def membership_nudge(copy, cta_text="See Membership Plans", href="pricing.html")
 
 # ---------------------------------------------------------------- HOME
 CLASS_TEASERS = [
-    ("Vinyasa", "All levels · $30", "Breath-synchronized movement linking one pose to the next."),
-    ("Yoga Sculpt", "All levels · $30", "A high-energy blend of vinyasa flow and light weights."),
-    ("Deep Stretch Yoga", "All levels · $30", "Long-held stretches to release tension and improve mobility."),
-    ("Community Yoga", "All levels · Free", "An all-levels class open to the whole community."),
+    ("Vinyasa", "$30", "Breath-synchronized movement linking one pose to the next."),
+    ("Yoga Sculpt", "$30", "A high-energy blend of vinyasa flow and light weights."),
+    ("Deep Stretch Yoga", "$30", "Long-held stretches to release tension and improve mobility."),
+    ("Community Yoga", "Free", "An all-levels class open to the whole community."),
 ]
 
 home_body = f"""
@@ -59,9 +59,11 @@ home_body = f"""
     </div>
     <div class="grid grid--4">
       {"".join(f'''<article class="card class-card">
-        <div class="img-placeholder" style="aspect-ratio:4/3;"><span>📷 {name}</span></div>
-        <h3>{name}</h3>
-        <p class="class-card__meta">{meta}</p>
+        {placeholder(name, ratio="4/3")}
+        <div class="class-card__head">
+          <h3 title="{name}">{name}</h3>
+          <p class="class-card__meta">{meta}</p>
+        </div>
         <p class="text-muted">{desc}</p>
       </article>''' for name, meta, desc in CLASS_TEASERS)}
     </div>
