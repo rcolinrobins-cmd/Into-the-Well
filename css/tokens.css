@@ -29,14 +29,9 @@
   --color-gold-dk:      #8A6B2E; /* use behind white text (badges) — 4.97:1 */
   --color-blush:        #E9C2B8; /* soft accent background, alt — matches source site's blush accent */
   --color-border:       #E4DACB; /* hairlines, card borders */
+  --color-header-bg:    #F2F2F0; /* nav header background — neutral grey, deliberately not warm-tinted like --color-cream */
+  --color-header-border:#E1E1DD; /* hairline under the header, matched to --color-header-bg's neutral grey rather than the warmer --color-border */
   --color-focus:        #1C6E5C; /* focus ring — distinct from brand accents, 3:1+ vs bg */
-
-  /* Nav height, used to pull the hero's background up underneath the
-     transparent header (see .hero) so its gradient is visible immediately
-     instead of a gap of plain body background showing through first.
-     80px covers the tallest rendered header (desktop, ~80.2px); a couple
-     px of slack here is invisible, being short would leave a visible seam. */
-  --header-height: 80px;
 
   /* ---- Typography ----
      Display: warm serif for headlines/brand voice.

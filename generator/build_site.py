@@ -74,7 +74,6 @@ def base_page(filename, title, description, body, extra_head=""):
 <header class="site-header">
   <div class="container nav">
     <a class="nav__brand" href="index.html">
-      <span class="nav__logo" aria-hidden="true">ITW</span>
       <span class="nav__brand-text">Into the Well</span>
     </a>
     <button class="nav__toggle" data-nav-toggle aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">
@@ -86,7 +85,7 @@ def base_page(filename, title, description, body, extra_head=""):
       <ul data-nav-links style="display:contents;">
         {nav_links}
       </ul>
-      <a class="btn btn--primary nav__cta" href="{CTA[0]}">{CTA[1]}</a>
+      <a class="btn btn--primary btn--sm nav__cta" href="{CTA[0]}">{CTA[1]}</a>
     </nav>
     <div class="nav__scrim" data-nav-scrim></div>
   </div>

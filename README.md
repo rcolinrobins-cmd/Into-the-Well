@@ -43,7 +43,7 @@ Into-the-Well/
 ## What you need to do before this can replace the live site
 
 1. **Add real photography.** Every dashed/striped box on the site (search any `.html` file for `img-placeholder`) marks where a photo belongs — hero shots, class photos, instructor headshots, the event space. The old site's images live on Wix's asset CDN, which this rebuild couldn't reach from its sandbox. Easiest path: log into the Wix dashboard → Media Manager → select all → download, then drop the files into `assets/images/` and swap the placeholder `<div>`s for `<img>` tags.
-2. **Add the real logo.** Same story — export it from Wix Media Manager (there were two logo files on the live site) and swap it into the header (`nav__logo` in each page, or edit `build_site.py`'s nav markup and rebuild — see below).
+2. **Add the real logo, if you want one.** The nav currently shows text only ("Into the Well", no icon/mark). If you want to bring back a logo image, export it from Wix Media Manager (there were two logo files on the live site) and add it into `.nav__brand` in `build_site.py`'s nav markup, then rebuild — see below.
 3. **Pick a booking/scheduling provider** (e.g. Momence, Mindbody, Vagaro, Acuity) and embed its widget on `book-online.html` in place of the placeholder.
 4. **Pick a payment provider** for membership billing (Stripe Billing, or your booking provider's built-in billing) and wire it to the "Choose Plan" buttons on `pricing.html`.
 5. **Wire up gift card sales** on `gift-card.html` (Stripe, Square, or your booking provider).

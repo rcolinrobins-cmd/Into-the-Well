@@ -6,13 +6,16 @@
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-html, body {
+body {
   /* The off-canvas mobile nav sits just outside the viewport (translateX)
      until opened; without this, some browsers still count it toward the
-     page's scrollable area and add a phantom horizontal scrollbar. */
-  overflow-x: hidden;
-}
-body {
+     page's scrollable area and add a phantom horizontal scrollbar.
+     `clip`, not `hidden`: unlike `hidden`, `clip` doesn't force the other
+     axis's computed overflow to `auto` (per the CSS overflow spec) — so
+     body never becomes its own separate scroll container, which is what
+     was silently breaking `.site-header`'s position: sticky (it was
+     sticking within body's inner scrollbox, not the actual viewport). */
+  overflow-x: clip;
   margin: 0;
   font-family: var(--font-body);
   font-size: var(--fs-base);
@@ -170,19 +173,15 @@ h3 { font-size: var(--fs-lg); }
   position: sticky;
   top: 0;
   z-index: 100;
-  background: transparent;
-  border-bottom: 1px solid transparent; /* reserve the space; see .is-scrolled below */
-  transition: background-color var(--duration-base) var(--ease-standard),
-              border-color var(--duration-base) var(--ease-standard);
+  background: var(--color-header-bg); /* subtle, permanent grey — was transparent-until-scrolled */
+  border-bottom: 1px solid var(--color-header-border);
+  transition: box-shadow var(--duration-base) var(--ease-standard);
 }
-/* Once the page scrolls, the nav needs *some* separation from whatever
-   content is passing underneath it, or links become unreadable over photos/
-   colored sections. main.js adds this class after a small scroll offset —
-   still no white fill, just a faint tint + blur so text stays legible. */
+/* main.js adds this class after a small scroll offset — a light lift so the
+   header reads as "above" whatever's scrolling underneath it, now that it's
+   no longer relying on a transparent-to-tinted background change for that. */
 .site-header.is-scrolled {
-  background: rgba(250, 246, 240, 0.72);
-  backdrop-filter: blur(8px);
-  border-bottom-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
 }
 .nav {
   display: flex;
@@ -196,21 +195,6 @@ h3 { font-size: var(--fs-lg); }
   gap: var(--space-3);
   text-decoration: none;
   min-width: 0; /* allow brand text to truncate instead of forcing overflow */
-}
-.nav__logo {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  background: var(--color-sage-pale);
-  color: var(--color-sage-dk);
-  font-family: var(--font-display);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.02em;
 }
 .nav__brand-text {
   font-family: var(--font-display);
@@ -341,13 +325,12 @@ h3 { font-size: var(--fs-lg); }
 
 /* ---------- Hero ---------- */
 .hero {
-  /* Pulled up underneath the transparent header (negative margin) and given
-     matching extra top padding, so the hero's own gradient is what shows
-     through the nav immediately instead of a gap of plain body background —
-     the actual fix for the header looking like a leftover white bar.
-     Content position is unchanged; only the background extends further up. */
-  margin-top: calc(-1 * var(--header-height));
-  padding-top: calc(var(--space-8) + var(--header-height));
+  /* No negative margin-top here: that was only ever needed to pull the
+     hero's background up underneath a *transparent* sticky header so its
+     gradient would show through immediately. Now that .site-header has its
+     own solid background, it already occupies its own space in normal flow
+     — the hero just needs its own top padding, nothing to compensate for. */
+  padding-top: var(--space-8);
   padding-bottom: var(--space-7);
   /* Fixed-length fade (not a 0%/100% stop) so this reads the same on every
      page: .hero--sub is ~366px tall, but the home page's .hero also wraps
@@ -599,7 +582,7 @@ h3 { font-size: var(--fs-lg); }
 /* Sub-page hero: same component as .hero, shorter — used on every page
    except the homepage. Was previously a one-off inline style repeated on
    14 pages; consolidated here so there's one place to change it. */
-.hero--sub { padding-top: calc(var(--space-7) + var(--header-height)); }
+.hero--sub { padding-top: var(--space-7); }
 
 /* Centered link/button below a content block ("See all X", "Read more") —
    was a repeated inline style; consolidated for consistency. */
