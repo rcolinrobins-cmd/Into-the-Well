@@ -223,6 +223,12 @@ h3 { font-size: var(--fs-lg); }
   inset: 0 0 0 auto;
   width: min(88vw, 380px);
   height: 100vh;
+  /* Needs to beat .nav__scrim's z-index: 90 below — without an explicit
+     z-index here, this defaults to auto (~0), so the scrim's positive
+     z-index paints it *above* this panel instead of behind it, which
+     tints the "opaque" white drawer a translucent grey (the scrim's
+     rgba(46,42,38,0.4) blending over everything, text included). */
+  z-index: 95;
   background: var(--color-white);
   box-shadow: var(--shadow-lg);
   padding: var(--space-7) var(--space-6);

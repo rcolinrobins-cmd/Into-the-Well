@@ -586,10 +586,12 @@ wws_body = f"""
   <div class="container">
     <h2 class="visually-hidden">Upcoming sessions</h2>
     <div class="grid grid--3">
-      {"".join(f'''<article class="card">
+      {"".join(f'''<article class="card class-card">
         {placeholder(name, ratio="4/3")}
-        <h3>{name}</h3>
-        <p class="class-card__meta">$35</p>
+        <div class="class-card__head">
+          <h3 title="{name}">{name}</h3>
+          <p class="class-card__meta">$35</p>
+        </div>
         <p class="text-muted">{desc}</p>
         <a class="btn btn--sm btn--secondary" href="book-online.html" aria-label="Book {name}">Book Now</a>
       </article>''' for name, desc in WWS)}
