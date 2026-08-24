@@ -118,25 +118,38 @@ write(
 )
 
 # ---------------------------------------------------------------- CLASSES
+# Sorted A-Z by name — that order is what powers the "All A-Z" filter option
+# on classes.html (see CLASS_FILTERS below); no separate sort needed there.
+# category must be one of CLASS_FILTERS' keys (below) so the filter buttons
+# and each card's data-category stay in sync.
 CLASSES = [
-    ("Pilates", "$30", "Low-impact, core-strengthening mat work that builds control and stability."),
-    ("Barre", "$30", "Ballet-inspired micro-movements that sculpt and strengthen using light resistance."),
-    ("Yin/Vin", "$30", "A blend of slow, deep-holding Yin postures and flowing Vinyasa sequences."),
-    ("Strength", "$30", "Full-body resistance training to build functional strength."),
-    ("Yoga Sculpt", "$30", "A high-energy blend of vinyasa flow and light weights."),
-    ("Slow Flow", "$30", "An unhurried, breath-led vinyasa practice."),
-    ("Deep Stretch Yoga", "$30", "Long-held stretches to release tension and improve mobility."),
-    ("Beginner's Yoga", "$30", "A welcoming introduction to foundational yoga poses and breathing."),
-    ("Moon Flow Yoga", "$30", "An evening flow designed to help you unwind and reset."),
-    ("Soulful Stretch", "$30", "Gentle stretching paired with mindful breathwork."),
-    ("Community Yoga", "Free", "An all-levels class open to the whole community."),
-    ("Naptime: A Restorative Practice", "$30", "Supported, restorative poses for deep relaxation."),
-    ("Sun Flow Yoga", "$30", "An energizing morning flow to start your day."),
-    ("Yogi Flow", "$30", "A steady, well-rounded vinyasa practice for all levels."),
-    ("Power Flow", "$30", "A dynamic, strength-building vinyasa flow."),
-    ("Weekend Barre", "$30", "Weekend barre session, open to all levels."),
-    ("Weekend Pilates", "$30", "Weekend pilates session, open to all levels."),
-    ("Vinyasa", "$30", "Breath-synchronized movement linking one pose to the next."),
+    ("Barre", "$30", "Ballet-inspired micro-movements that sculpt and strengthen using light resistance.", "barre"),
+    ("Beginner's Yoga", "$30", "A welcoming introduction to foundational yoga poses and breathing.", "yoga"),
+    ("Community Yoga", "Free", "An all-levels class open to the whole community.", "yoga"),
+    ("Deep Stretch Yoga", "$30", "Long-held stretches to release tension and improve mobility.", "yoga"),
+    ("Moon Flow Yoga", "$30", "An evening flow designed to help you unwind and reset.", "yoga"),
+    ("Naptime: A Restorative Practice", "$30", "Supported, restorative poses for deep relaxation.", "yoga"),
+    ("Pilates", "$30", "Low-impact, core-strengthening mat work that builds control and stability.", "pilates"),
+    ("Power Flow", "$30", "A dynamic, strength-building vinyasa flow.", "yoga"),
+    ("Slow Flow", "$30", "An unhurried, breath-led vinyasa practice.", "yoga"),
+    ("Soulful Stretch", "$30", "Gentle stretching paired with mindful breathwork.", "yoga"),
+    ("Strength", "$30", "Full-body resistance training to build functional strength.", "strength"),
+    ("Sun Flow Yoga", "$30", "An energizing morning flow to start your day.", "yoga"),
+    ("Vinyasa", "$30", "Breath-synchronized movement linking one pose to the next.", "yoga"),
+    ("Weekend Barre", "$30", "Weekend barre session, open to all levels.", "barre"),
+    ("Weekend Pilates", "$30", "Weekend pilates session, open to all levels.", "pilates"),
+    ("Yin/Vin", "$30", "A blend of slow, deep-holding Yin postures and flowing Vinyasa sequences.", "yoga"),
+    ("Yoga Sculpt", "$30", "A high-energy blend of vinyasa flow and light weights.", "yoga"),
+    ("Yogi Flow", "$30", "A steady, well-rounded vinyasa practice for all levels.", "yoga"),
+]
+
+# "All A-Z" first, then the rest alphabetized by label.
+CLASS_FILTERS = [
+    ("all", "All A-Z"),
+    ("barre", "Barre"),
+    ("pilates", "Pilates"),
+    ("strength", "Strength"),
+    ("yoga", "Yoga"),
 ]
 
 classes_body = f"""
@@ -150,17 +163,24 @@ classes_body = f"""
 <section class="section">
   <div class="container">
     {NOTICE.format("The live site linked a &ldquo;Read More&rdquo; on each class but didn't expose the detail text to this rebuild. The one-line descriptions below are placeholder drafts by genre &mdash; swap in your studio's own copy for each class.")}
+    <div class="class-filter" data-class-filter>
+      <p class="class-filter__label" id="class-filter-label">Show me classes:</p>
+      <div class="class-filter__options" role="group" aria-labelledby="class-filter-label">
+        {"".join(f'''<button type="button" class="chip{" is-active" if key == "all" else ""}" data-filter="{key}" aria-pressed="{"true" if key == "all" else "false"}">{label}</button>''' for key, label in CLASS_FILTERS)}
+      </div>
+      <p class="class-filter__count" data-class-count aria-live="polite"></p>
+    </div>
     <h2 class="visually-hidden">All classes</h2>
     <div class="grid grid--3 mt-6">
-      {"".join(f'''<article class="card class-card">
+      {"".join(f'''<article class="card class-card" data-category="{category}">
         {placeholder(name, ratio="4/3")}
         <div class="class-card__head">
-          <h3>{name}</h3>
+          <h3 title="{name}">{name}</h3>
           <p class="class-card__meta">{price}</p>
         </div>
         <p class="text-muted">{desc}</p>
         <a class="btn btn--sm btn--secondary" href="book-online.html" aria-label="Book {name}">Book This Class</a>
-      </article>''' for name, price, desc in CLASSES)}
+      </article>''' for name, price, desc, category in CLASSES)}
     </div>
     {membership_nudge("Taking class more than once a week? <strong>Unlimited Monthly membership pays for itself in just 4 classes</strong> — plans start at $69/mo.")}
   </div>

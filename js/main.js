@@ -128,12 +128,11 @@
     resetToCurrentLink();
   }
 
-  /* ---------- Header: tint in only once the page has scrolled ----------
-   * The header is transparent at rest by design. Once content has actually
-   * scrolled underneath it, a light tint + blur keeps nav text legible —
-   * still not the solid white bar this replaced. Threshold matches a
-   * typical hero's height fraction so it kicks in quickly, not the instant
-   * you nudge the page.
+  /* ---------- Header: light shadow once the page has scrolled ----------
+   * The header has a permanent solid background; this just adds a small
+   * lift (box-shadow, see styles.css) once content has actually scrolled
+   * underneath it, so the header reads as "above" the page instead of
+   * just another flat section.
    */
   var header = document.querySelector(".site-header");
   if (header) {
@@ -142,5 +141,52 @@
     };
     window.addEventListener("scroll", applyScrollState, { passive: true });
     applyScrollState();
+  }
+
+  /* ---------- Class filter (classes.html) ----------
+   * Every .class-card carries a data-category set at build time (see
+   * generator/pages.py). Clicking a filter chip shows only the cards
+   * matching that category — "all" shows everything — and updates the
+   * live-region count so screen reader users get the result too, not just
+   * a visual change. Cards are hidden via the `hidden` attribute rather
+   * than a CSS class so they're pulled out of the accessibility tree, not
+   * just hidden visually.
+   */
+  var filterBar = document.querySelector("[data-class-filter]");
+  if (filterBar) {
+    var filterButtons = Array.prototype.slice.call(
+      filterBar.querySelectorAll("[data-filter]")
+    );
+    var classCards = Array.prototype.slice.call(
+      document.querySelectorAll(".class-card")
+    );
+    var countEl = document.querySelector("[data-class-count]");
+
+    var applyClassFilter = function (filter) {
+      var visibleCount = 0;
+      classCards.forEach(function (card) {
+        var isMatch = filter === "all" || card.dataset.category === filter;
+        card.hidden = !isMatch;
+        if (isMatch) visibleCount += 1;
+      });
+      if (countEl) {
+        countEl.textContent =
+          "Showing " + visibleCount + " of " + classCards.length + " classes";
+      }
+    };
+
+    filterButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        filterButtons.forEach(function (b) {
+          b.classList.remove("is-active");
+          b.setAttribute("aria-pressed", "false");
+        });
+        button.classList.add("is-active");
+        button.setAttribute("aria-pressed", "true");
+        applyClassFilter(button.dataset.filter);
+      });
+    });
+
+    applyClassFilter("all");
   }
 })();

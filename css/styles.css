@@ -411,10 +411,12 @@ h3 { font-size: var(--fs-lg); }
 /* Class / event card — every .class-card in a grid should read as the same
    size with its photo/name/price/description all starting at the same
    height, even though grid rows only stretch cards to match *their own
-   row's* tallest card, not the whole page. Fixed-height reserves on the
-   name and description (rather than relying on however much text happens
-   to be there) are what actually make every row line up with every other
-   row, not just the cards within one row. */
+   row's* tallest card, not the whole page. The name is clamped to exactly
+   one line (so it never needs a multi-line reserve, keeping it snug against
+   the description right below), and the description gets a fixed-height
+   reserve regardless of how much text happens to be there — together
+   that's what makes every row line up with every other row, not just the
+   cards within one row. */
 .class-card__meta { display: flex; gap: var(--space-3); font-size: var(--fs-sm); color: var(--color-sage-dk); font-weight: var(--fw-medium); }
 /* Name + price share one row (price at the end/right), with the
    description immediately underneath — no dedicated price line. */
@@ -426,10 +428,15 @@ h3 { font-size: var(--fs-lg); }
 }
 .class-card__head .class-card__meta { flex-shrink: 0; }
 .class-card h3 {
-  /* Reserves 2 lines so a short name (e.g. "Barre") and a long one that
-     wraps (e.g. "Naptime: A Restorative Practice") both leave the
-     description starting at the same spot underneath. */
-  min-height: calc(var(--lh-tight) * var(--fs-lg) * 2);
+  /* Clamped to one line (not a 2-line min-height reserve) so every name
+     is exactly the same height and the description starts right underneath
+     with no dead air below a short name. A name too long to fit truncates
+     with an ellipsis — the full name is still in the DOM (screen readers
+     get all of it) and in the `title` attribute (mouse-hover tooltip). */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0; /* required for text-overflow to take effect on a flex item */
 }
 .class-card .text-muted {
   /* Reserves 3 lines regardless of actual description length, so the CTA
@@ -442,6 +449,63 @@ h3 { font-size: var(--fs-lg); }
   margin-top: auto;
   width: 100%;
 }
+
+/* Class filter (classes.html) — see js/main.js for the show/hide logic. */
+.class-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-4);
+  row-gap: var(--space-3);
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.class-filter__label {
+  font-weight: var(--fw-semibold);
+  color: var(--color-charcoal);
+}
+.class-filter__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-charcoal);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+  min-height: 40px; /* touch target */
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard);
+}
+.chip:hover { border-color: var(--color-terracotta-dk); }
+.chip.is-active {
+  background: var(--color-terracotta-dk);
+  border-color: var(--color-terracotta-dk);
+  color: var(--color-white);
+}
+/* Visually hidden until a filter has actually run (see main.js) — avoids
+   announcing "Showing 0 of 0" for an instant before JS sets the real count,
+   and disappears entirely if JS fails to load, since there's nothing to
+   report without it. */
+.class-filter__count {
+  font-size: var(--fs-sm);
+  color: var(--color-charcoal-soft);
+}
+.class-filter__count:empty { display: none; }
+/* .card sets its own `display: flex` (same specificity as the browser's
+   default `[hidden] { display: none }` UA rule, and author styles win
+   ties), which would otherwise cancel out `hidden` and keep filtered-out
+   cards visible. This selector's higher specificity restores it. */
+.class-card[hidden] { display: none; }
 
 /* Instructor card */
 .instructor-card { text-align: center; align-items: center; }
