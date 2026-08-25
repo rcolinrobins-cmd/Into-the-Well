@@ -1,0 +1,67 @@
+{
+  "plan-drop-in-class": {
+    "label": "Drop-In Class",
+    "amountCents": 3000,
+    "recurring": false
+  },
+  "plan-unlimited-monthly-membership": {
+    "label": "Unlimited Monthly Membership",
+    "amountCents": 10900,
+    "recurring": true
+  },
+  "plan-membership-lite": {
+    "label": "Membership Lite",
+    "amountCents": 7900,
+    "recurring": true
+  },
+  "plan-weekend-warrior": {
+    "label": "Weekend Warrior",
+    "amountCents": 6900,
+    "recurring": true
+  },
+  "plan-5-class-pass": {
+    "label": "5 Class Pass",
+    "amountCents": 12500,
+    "recurring": false
+  },
+  "plan-one-week-unlimited": {
+    "label": "One Week Unlimited",
+    "amountCents": 4000,
+    "recurring": false
+  },
+  "plan-one-month-unlimited": {
+    "label": "One Month Unlimited",
+    "amountCents": 14900,
+    "recurring": false
+  },
+  "plan-student-unlimited-membership": {
+    "label": "Student Unlimited Membership",
+    "amountCents": 7900,
+    "recurring": true
+  },
+  "gift-25": {
+    "label": "Gift Card \u2014 $25",
+    "amountCents": 2500,
+    "recurring": false
+  },
+  "gift-50": {
+    "label": "Gift Card \u2014 $50",
+    "amountCents": 5000,
+    "recurring": false
+  },
+  "gift-100": {
+    "label": "Gift Card \u2014 $100",
+    "amountCents": 10000,
+    "recurring": false
+  },
+  "gift-150": {
+    "label": "Gift Card \u2014 $150",
+    "amountCents": 15000,
+    "recurring": false
+  },
+  "gift-200": {
+    "label": "Gift Card \u2014 $200",
+    "amountCents": 20000,
+    "recurring": false
+  }
+}

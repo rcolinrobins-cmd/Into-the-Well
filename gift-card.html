@@ -59,24 +59,45 @@
     <div class="grid grid--3">
       <div class="card text-center">
         <p class="plan-card__price">$25</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select $25 gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-25" aria-label="Select $25 gift card">Select</button>
       </div><div class="card text-center">
         <p class="plan-card__price">$50</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select $50 gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-50" aria-label="Select $50 gift card">Select</button>
       </div><div class="card text-center">
         <p class="plan-card__price">$100</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select $100 gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-100" aria-label="Select $100 gift card">Select</button>
       </div><div class="card text-center">
         <p class="plan-card__price">$150</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select $150 gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-150" aria-label="Select $150 gift card">Select</button>
       </div><div class="card text-center">
         <p class="plan-card__price">$200</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select $200 gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-200" aria-label="Select $200 gift card">Select</button>
       </div>
     </div>
-    <div class="notice">Gift card purchase &amp; delivery ran through Wix's e-commerce. Connect a payment processor (e.g. Stripe, Square) to sell and auto-deliver gift card codes here.</div>
+    <div class="notice">This charges a real payment through Square (Web Payments SDK) when a card is entered below — see README for the environment variables it needs. It doesn't yet issue an actual redeemable Square gift card code, though: that needs Square's separate Gift Cards API (create + activate a GAN) wired in on top of this payment before treating it as a complete gift-card product.</div>
   </div>
 </section>
+
+<script>window.CHECKOUT_ITEMS = {"plan-drop-in-class": {"label": "Drop-In Class", "amountCents": 3000, "recurring": false}, "plan-unlimited-monthly-membership": {"label": "Unlimited Monthly Membership", "amountCents": 10900, "recurring": true}, "plan-membership-lite": {"label": "Membership Lite", "amountCents": 7900, "recurring": true}, "plan-weekend-warrior": {"label": "Weekend Warrior", "amountCents": 6900, "recurring": true}, "plan-5-class-pass": {"label": "5 Class Pass", "amountCents": 12500, "recurring": false}, "plan-one-week-unlimited": {"label": "One Week Unlimited", "amountCents": 4000, "recurring": false}, "plan-one-month-unlimited": {"label": "One Month Unlimited", "amountCents": 14900, "recurring": false}, "plan-student-unlimited-membership": {"label": "Student Unlimited Membership", "amountCents": 7900, "recurring": true}, "gift-25": {"label": "Gift Card \u2014 $25", "amountCents": 2500, "recurring": false}, "gift-50": {"label": "Gift Card \u2014 $50", "amountCents": 5000, "recurring": false}, "gift-100": {"label": "Gift Card \u2014 $100", "amountCents": 10000, "recurring": false}, "gift-150": {"label": "Gift Card \u2014 $150", "amountCents": 15000, "recurring": false}, "gift-200": {"label": "Gift Card \u2014 $200", "amountCents": 20000, "recurring": false}};</script>
+<dialog class="checkout-modal" data-checkout-modal aria-labelledby="checkout-modal-title">
+  <div class="checkout-modal__inner">
+    <button type="button" class="checkout-modal__close btn btn--sm btn--secondary" data-checkout-close autofocus aria-label="Close">Close &#10005;</button>
+    <h2 id="checkout-modal-title" data-checkout-title></h2>
+    <p class="plan-card__price" data-checkout-price></p>
+    <form data-checkout-form novalidate>
+      <div class="form-field">
+        <label for="checkout-email">Email <span class="text-muted">(for your receipt)</span></label>
+        <input type="email" id="checkout-email" name="email" data-checkout-email required autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label id="checkout-card-label">Card details</label>
+        <div class="checkout-modal__card" id="checkout-card-container" data-checkout-card-container aria-labelledby="checkout-card-label"></div>
+      </div>
+      <p class="checkout-modal__status" data-checkout-status role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn--primary btn--block" data-checkout-submit>Pay</button>
+    </form>
+  </div>
+</dialog>
 
 </main>
 
@@ -121,5 +142,6 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
 </body>
 </html>

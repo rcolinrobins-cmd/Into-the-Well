@@ -1,0 +1,12 @@
+{
+  "name": "into-the-well-collective",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Into The Well Collective — static site + Square payments/booking API routes.",
+  "scripts": {
+    "generate": "python3 generator/pages.py"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -142,6 +142,16 @@ h3 { font-size: var(--fs-lg); }
   min-height: 44px; /* touch target */
 }
 .btn:active { transform: translateY(1px); }
+/* No button on the site used the disabled attribute before the checkout
+   modal (js/checkout.js disables "Pay" while processing, after an error
+   that blocks retry, and after success) — without this, a disabled button
+   was indistinguishable from a live one, which reads as broken rather
+   than "wait" or "done". */
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn:disabled:active { transform: none; }
 .btn--primary {
   /* --color-cta is too light for white text — dark navy text at rest
      (verified AA, see tokens.css); hover matches .btn--secondary's navy
@@ -662,6 +672,49 @@ h3 { font-size: var(--fs-lg); }
 }
 .instructor-modal__schedule-name { font-weight: var(--fw-semibold); color: var(--color-charcoal); }
 .instructor-modal__schedule-date { color: var(--color-charcoal-soft); white-space: nowrap; }
+
+/* Checkout modal (Square Web Payments SDK) — see js/checkout.js. Narrower
+   than .instructor-modal since it's a form, not a photo/bio layout, but
+   shares the same dialog/backdrop/close-button conventions. */
+.checkout-modal {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  width: min(90vw, 440px);
+  box-shadow: var(--shadow-lg);
+  background: var(--color-white);
+  color: var(--color-charcoal);
+}
+.checkout-modal::backdrop { background: rgba(46, 42, 38, 0.55); }
+.checkout-modal__inner {
+  position: relative;
+  padding: var(--space-6);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.checkout-modal__close { position: absolute; top: var(--space-4); right: var(--space-4); }
+.checkout-modal h2 { margin-top: var(--space-4); margin-bottom: var(--space-1); padding-right: var(--space-8); }
+.checkout-modal .plan-card__price { margin-bottom: var(--space-5); }
+/* The Square-hosted card iframe attaches inside this div (js/checkout.js) —
+   styled to look like a normal .form-field input so it doesn't read as a
+   different kind of control than the email field above it. Square controls
+   the iframe's own internal styling via a separate JS config, not CSS. */
+.checkout-modal__card {
+  min-height: 44px;
+  padding: var(--space-3) var(--space-4);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+}
+.checkout-modal__card.is-focused { border-color: var(--color-sage); }
+.checkout-modal__status {
+  min-height: 1.5em;
+  font-size: var(--fs-sm);
+  margin-top: var(--space-3);
+}
+.checkout-modal__status[data-tone="error"] { color: var(--color-terracotta-dk); }
+.checkout-modal__status[data-tone="success"] { color: var(--color-sage-dk); }
+.checkout-modal .btn--block { margin-top: var(--space-4); }
 
 /* FAQ / accordion */
 .accordion-item { border-bottom: 1px solid var(--color-border); }

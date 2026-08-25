@@ -5,7 +5,9 @@ Produces plain, dependency-free HTML files from shared header/footer
 templates + per-page content, so the whole site stays consistent and
 easy to hand-edit afterward (each output file is just flat HTML).
 """
+import json
 import os
+import re
 
 # Output directory: the repo root (one level up from this script), so the
 # deployable site sits at the top of the repo — Vercel/Netlify/GitHub Pages
@@ -47,6 +49,40 @@ def placeholder(label, ratio="16/10", radius="var(--radius-md)"):
         f'style="aspect-ratio:{ratio}; border-radius:{radius};">'
         f'<span>📷 {label}<br><small>Replace with real photo</small></span></div>'
     )
+
+
+def checkout_modal_markup(items):
+    """Shared Square checkout dialog — append this to the body of any page
+    with a [data-checkout-item] trigger button (see js/checkout.js). Only
+    needed on gift-card.html and pricing.html today; not a big enough
+    chunk of markup to bother making conditional per-page in base_page().
+
+    `items` (CHECKOUT_ITEMS from pages.py) is embedded as window data so
+    the client can show a label/price without re-deriving it — same
+    pattern as window.INSTRUCTOR_DATA on instructors.html. This is the
+    display copy only; api/create-payment.js re-looks-up the real price
+    server-side from data/checkout-items.json rather than trusting it."""
+    return f"""
+<script>window.CHECKOUT_ITEMS = {json.dumps(items)};</script>
+<dialog class="checkout-modal" data-checkout-modal aria-labelledby="checkout-modal-title">
+  <div class="checkout-modal__inner">
+    <button type="button" class="checkout-modal__close btn btn--sm btn--secondary" data-checkout-close autofocus aria-label="Close">Close &#10005;</button>
+    <h2 id="checkout-modal-title" data-checkout-title></h2>
+    <p class="plan-card__price" data-checkout-price></p>
+    <form data-checkout-form novalidate>
+      <div class="form-field">
+        <label for="checkout-email">Email <span class="text-muted">(for your receipt)</span></label>
+        <input type="email" id="checkout-email" name="email" data-checkout-email required autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label id="checkout-card-label">Card details</label>
+        <div class="checkout-modal__card" id="checkout-card-container" data-checkout-card-container aria-labelledby="checkout-card-label"></div>
+      </div>
+      <p class="checkout-modal__status" data-checkout-status role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn--primary btn--block" data-checkout-submit>Pay</button>
+    </form>
+  </div>
+</dialog>"""
 
 
 def base_page(filename, title, description, body, extra_head=""):
@@ -138,6 +174,7 @@ def base_page(filename, title, description, body, extra_head=""):
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
 </body>
 </html>
 """
@@ -149,3 +186,34 @@ def write(filename, title, description, body, extra_head=""):
     with open(path, "w") as f:
         f.write(html)
     print("wrote", filename)
+
+
+def slugify(text):
+    """'Unlimited Monthly Membership' -> 'unlimited-monthly-membership' —
+    used to build stable checkout item keys from display names, so a plan
+    renamed later gets a new (not silently mismatched) key rather than a
+    hand-picked one going stale next to it."""
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    return slug
+
+
+def price_to_cents(price):
+    """'$109' -> 10900. Only called on the fixed-price gift card/plan
+    strings above, never on user input."""
+    return round(float(price.replace("$", "").replace(",", "")) * 100)
+
+
+def write_checkout_items(items, rel_path="data/checkout-items.json"):
+    """Writes the single source of truth for what the Square checkout
+    modal is allowed to charge: item key -> {label, amountCents, recurring}.
+    Generated from the same GIFT_AMOUNTS/TIER_PLANS/LIST_PLANS tuples that
+    render the on-page prices, so this can never drift from what a visitor
+    actually sees. Read at request time by api/create-payment.js, which
+    looks up the authoritative amount server-side rather than trusting
+    whatever the client posts — see that file for why."""
+    path = os.path.join(ROOT, rel_path)
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(items, f, indent=2)
+        f.write("\n")
+    print("wrote", rel_path)

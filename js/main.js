@@ -319,4 +319,26 @@
       if (lastInstructorTrigger) lastInstructorTrigger.focus();
     });
   }
+
+  /* ---------- Hosted Square booking embed (book-online.html) ----------
+   * Fetched at runtime (not baked in at generate time) so changing
+   * SQUARE_BOOKING_URL is a redeploy of the /api function, not a rebuild
+   * of the static HTML. Leaves the existing placeholder/.notice markup
+   * completely untouched if the request fails or the env var isn't set
+   * yet — this only ever replaces it once a real URL is confirmed.
+   */
+  var bookingEmbed = document.querySelector("[data-booking-embed]");
+  if (bookingEmbed) {
+    fetch("/api/config")
+      .then(function (res) { return res.json(); })
+      .then(function (config) {
+        if (!config.bookingUrl) return;
+        bookingEmbed.innerHTML =
+          '<iframe src="' + config.bookingUrl + '" title="Book a class" ' +
+          'loading="lazy" style="width:100%; min-height:720px; border:0; border-radius:var(--radius-md);"></iframe>';
+      })
+      .catch(function () {
+        /* Static placeholder stays as-is — nothing to do here. */
+      });
+  }
 })();

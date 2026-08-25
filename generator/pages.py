@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import json
 from build_site import (
-    write, placeholder, ICON_CHEVRON, ICON_PIN, ICON_PHONE, ICON_MAIL,
+    write, placeholder, slugify, price_to_cents, write_checkout_items,
+    checkout_modal_markup,
+    ICON_CHEVRON, ICON_PIN, ICON_PHONE, ICON_MAIL,
     PHONE, PHONE_TEL, EMAIL, ADDRESS, MAPS_URL, TAGLINE,
 )
 
@@ -360,11 +362,13 @@ book_body = f"""
 </section>
 <section class="section">
   <div class="container container--narrow">
-    {NOTICE.format("The original site used Wix's built-in booking &amp; checkout system, which can't move to a new server. Pick a booking/scheduling provider (e.g. Momence, Mindbody, Vagaro, Acuity Scheduling) and embed its calendar widget here &mdash; this section is a placeholder for that embed.")}
-    <div class="card mt-6" style="align-items:center; text-align:center;">
-      {placeholder("Booking calendar embed goes here", ratio="16/9")}
-      <p class="text-muted">Filter by class type or instructor once your booking provider is connected.</p>
-      <a class="btn btn--primary" href="pricing.html">See Membership Plans</a>
+    <div data-booking-embed>
+      {NOTICE.format("Set SQUARE_BOOKING_URL (your Square Appointments booking-site link — Square Dashboard &rarr; Appointments &rarr; Online Booking) and this embeds live scheduling automatically, no rebuild needed — see README. Until it's set, this stays a placeholder.")}
+      <div class="card mt-6" style="align-items:center; text-align:center;">
+        {placeholder("Booking calendar embed goes here", ratio="16/9")}
+        <p class="text-muted">Filter by class type or instructor once your booking provider is connected.</p>
+        <a class="btn btn--primary" href="pricing.html">See Membership Plans</a>
+      </div>
     </div>
     {membership_nudge("Coming back for more? <strong>Save with a membership</strong> — plans start at $69/mo, or try a full week unlimited for $40.", "Compare Plans")}
   </div>
@@ -400,6 +404,28 @@ PERKS = [
     "Merchandise discount",
 ]
 
+# ------------------------------------------------------- CHECKOUT ITEMS
+# Single source of truth for what the Square checkout modal can charge —
+# built from the same tuples that render the prices above/on gift-card.html,
+# so it can't drift from what a visitor actually sees. api/create-payment.js
+# reads the generated JSON to look up the real amount for a given item key
+# rather than trusting whatever the client posts. Built here (before
+# GIFT_AMOUNTS exists) because pricing_body needs it below; the gift card
+# entries get merged in once GIFT_AMOUNTS is defined, further down.
+CHECKOUT_ITEMS = {}
+for name, price, terms, desc, featured, cta, hint in TIER_PLANS:
+    CHECKOUT_ITEMS["plan-" + slugify(name)] = {
+        "label": name,
+        "amountCents": price_to_cents(price),
+        "recurring": "auto-renews" in terms,
+    }
+for name, price, terms, desc, cta, hint in LIST_PLANS:
+    CHECKOUT_ITEMS["plan-" + slugify(name)] = {
+        "label": name,
+        "amountCents": price_to_cents(price),
+        "recurring": "auto-renews" in terms,
+    }
+
 pricing_body = f"""
 <section class="hero hero--sub">
   <div class="container">
@@ -418,7 +444,7 @@ pricing_body = f"""
         <p class="plan-card__price">{price}<span> {terms}</span></p>
         <p class="text-muted">{desc}</p>
         {f'<p class="badge">{hint}</p>' if hint else ""}
-        <a class="btn {"btn--primary" if featured else "btn--secondary"} btn--block" href="book-online.html">{cta}</a>
+        <button type="button" class="btn {"btn--primary" if featured else "btn--secondary"} btn--block" data-checkout-item="plan-{slugify(name)}">{cta}</button>
       </article>''' for name, price, terms, desc, featured, cta, hint in TIER_PLANS)}
     </div>
   </div>
@@ -438,7 +464,7 @@ pricing_body = f"""
         <div class="plan-list__action">
           <p class="plan-list__price">{price}<span>{terms}</span></p>
           {f'<p class="badge">{hint}</p>' if hint else ""}
-          <a class="btn btn--secondary btn--sm" href="book-online.html">{cta}</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-{slugify(name)}">{cta}</button>
         </div>
       </div>''' for name, price, terms, desc, cta, hint in LIST_PLANS)}
     </div>
@@ -451,9 +477,10 @@ pricing_body = f"""
       {"".join(f'<li class="card">{perk}</li>' for perk in PERKS)}
     </ul>
     {membership_nudge("Not sure which plan fits? Tell us how often you'd like to practice and we'll help you choose.", "Contact Us", "contact.html")}
-    {NOTICE.format("Checkout and recurring billing ran through Wix on the old site. Plans above will need to connect to your new payment/booking provider (e.g. Stripe Billing, Momence, Mindbody) before these buttons can actually charge a card.")}
+    {NOTICE.format("Every plan above charges its listed price once through Square (Web Payments SDK) when someone clicks through and enters a card &mdash; see README for the environment variables it needs. For the &ldquo;/month, auto-renews&rdquo; plans, that's only the first payment: actual recurring auto-billing isn't wired up yet, since it needs a Catalog subscription plan created per tier in Square (via Subscriptions API) plus card-on-file storage. Fine for one-time plans (drop-in, class passes, trial weeks) as-is.")}
   </div>
 </section>
+{checkout_modal_markup(CHECKOUT_ITEMS)}
 """
 write(
     "pricing.html",
@@ -464,6 +491,18 @@ write(
 
 # ---------------------------------------------------------------- GIFT CARD
 GIFT_AMOUNTS = ["$25", "$50", "$100", "$150", "$200"]
+
+# Merge the gift card amounts into the same CHECKOUT_ITEMS dict built above
+# (before pricing_body), then write the combined result out once — this is
+# the point in the file where every item that needs to be in it exists.
+for amt in GIFT_AMOUNTS:
+    CHECKOUT_ITEMS["gift-" + amt.replace("$", "")] = {
+        "label": f"Gift Card — {amt}",
+        "amountCents": price_to_cents(amt),
+        "recurring": False,
+    }
+write_checkout_items(CHECKOUT_ITEMS)
+
 gift_body = f"""
 <section class="hero hero--sub">
   <div class="container">
@@ -478,12 +517,13 @@ gift_body = f"""
     <div class="grid grid--3">
       {"".join(f'''<div class="card text-center">
         <p class="plan-card__price">{amt}</p>
-        <a class="btn btn--secondary btn--block" href="contact.html" aria-label="Select {amt} gift card">Select</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="gift-{amt.replace("$", "")}" aria-label="Select {amt} gift card">Select</button>
       </div>''' for amt in GIFT_AMOUNTS)}
     </div>
-    {NOTICE.format("Gift card purchase &amp; delivery ran through Wix's e-commerce. Connect a payment processor (e.g. Stripe, Square) to sell and auto-deliver gift card codes here.")}
+    {NOTICE.format("This charges a real payment through Square (Web Payments SDK) when a card is entered below — see README for the environment variables it needs. It doesn't yet issue an actual redeemable Square gift card code, though: that needs Square's separate Gift Cards API (create + activate a GAN) wired in on top of this payment before treating it as a complete gift-card product.")}
   </div>
 </section>
+{checkout_modal_markup(CHECKOUT_ITEMS)}
 """
 write(
     "gift-card.html",

@@ -63,21 +63,21 @@
         <p class="plan-card__price">$30<span> one-time</span></p>
         <p class="text-muted">Reserve the class using the booking calendar. Your charge appears at checkout.</p>
         
-        <a class="btn btn--secondary btn--block" href="book-online.html">Book a Drop-In</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="plan-drop-in-class">Book a Drop-In</button>
       </article><article class="card plan-card plan-card--featured">
         <span class="plan-card__badge">Best Value</span>
         <h3>Unlimited Monthly Membership</h3>
         <p class="plan-card__price">$109<span> /month, auto-renews</span></p>
         <p class="text-muted">Enjoy as many classes each month as your heart desires. Space must be reserved online prior.</p>
         <p class="badge">Pays for itself in 4 classes</p>
-        <a class="btn btn--primary btn--block" href="book-online.html">Start Unlimited Membership</a>
+        <button type="button" class="btn btn--primary btn--block" data-checkout-item="plan-unlimited-monthly-membership">Start Unlimited Membership</button>
       </article><article class="card plan-card ">
         
         <h3>Membership Lite</h3>
         <p class="plan-card__price">$79<span> /month, auto-renews</span></p>
         <p class="text-muted">8 class credits per month — perfect for someone who only wants to come occasionally.</p>
         <p class="badge">As low as $9.88/class</p>
-        <a class="btn btn--secondary btn--block" href="book-online.html">Start Membership Lite</a>
+        <button type="button" class="btn btn--secondary btn--block" data-checkout-item="plan-membership-lite">Start Membership Lite</button>
       </article>
     </div>
   </div>
@@ -97,7 +97,7 @@
         <div class="plan-list__action">
           <p class="plan-list__price">$69<span>/month, auto-renews</span></p>
           <p class="badge">Pays for itself in 3 classes</p>
-          <a class="btn btn--secondary btn--sm" href="book-online.html">Start Weekend Warrior</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-weekend-warrior">Start Weekend Warrior</button>
         </div>
       </div><div class="plan-list__row">
         <div class="plan-list__info">
@@ -107,7 +107,7 @@
         <div class="plan-list__action">
           <p class="plan-list__price">$125<span>one-time, valid 3 months</span></p>
           <p class="badge">Just $25/class</p>
-          <a class="btn btn--secondary btn--sm" href="book-online.html">Buy the 5 Class Pass</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-5-class-pass">Buy the 5 Class Pass</button>
         </div>
       </div><div class="plan-list__row">
         <div class="plan-list__info">
@@ -117,7 +117,7 @@
         <div class="plan-list__action">
           <p class="plan-list__price">$40<span>one-time, valid 1 week</span></p>
           
-          <a class="btn btn--secondary btn--sm" href="book-online.html">Start My Trial Week</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-one-week-unlimited">Start My Trial Week</button>
         </div>
       </div><div class="plan-list__row">
         <div class="plan-list__info">
@@ -127,7 +127,7 @@
         <div class="plan-list__action">
           <p class="plan-list__price">$149<span>one-time, valid 1 month</span></p>
           
-          <a class="btn btn--secondary btn--sm" href="book-online.html">Start One Month Unlimited</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-one-month-unlimited">Start One Month Unlimited</button>
         </div>
       </div><div class="plan-list__row">
         <div class="plan-list__info">
@@ -137,7 +137,7 @@
         <div class="plan-list__action">
           <p class="plan-list__price">$79<span>/month, auto-renews</span></p>
           <p class="badge">Pays for itself in 3 classes</p>
-          <a class="btn btn--secondary btn--sm" href="book-online.html">Get Student Pricing</a>
+          <button type="button" class="btn btn--secondary btn--sm" data-checkout-item="plan-student-unlimited-membership">Get Student Pricing</button>
         </div>
       </div>
     </div>
@@ -153,9 +153,30 @@
         <p>Not sure which plan fits? Tell us how often you'd like to practice and we'll help you choose.</p>
         <a class="btn btn--primary btn--sm" href="contact.html">Contact Us</a>
       </div>
-    <div class="notice">Checkout and recurring billing ran through Wix on the old site. Plans above will need to connect to your new payment/booking provider (e.g. Stripe Billing, Momence, Mindbody) before these buttons can actually charge a card.</div>
+    <div class="notice">Every plan above charges its listed price once through Square (Web Payments SDK) when someone clicks through and enters a card &mdash; see README for the environment variables it needs. For the &ldquo;/month, auto-renews&rdquo; plans, that's only the first payment: actual recurring auto-billing isn't wired up yet, since it needs a Catalog subscription plan created per tier in Square (via Subscriptions API) plus card-on-file storage. Fine for one-time plans (drop-in, class passes, trial weeks) as-is.</div>
   </div>
 </section>
+
+<script>window.CHECKOUT_ITEMS = {"plan-drop-in-class": {"label": "Drop-In Class", "amountCents": 3000, "recurring": false}, "plan-unlimited-monthly-membership": {"label": "Unlimited Monthly Membership", "amountCents": 10900, "recurring": true}, "plan-membership-lite": {"label": "Membership Lite", "amountCents": 7900, "recurring": true}, "plan-weekend-warrior": {"label": "Weekend Warrior", "amountCents": 6900, "recurring": true}, "plan-5-class-pass": {"label": "5 Class Pass", "amountCents": 12500, "recurring": false}, "plan-one-week-unlimited": {"label": "One Week Unlimited", "amountCents": 4000, "recurring": false}, "plan-one-month-unlimited": {"label": "One Month Unlimited", "amountCents": 14900, "recurring": false}, "plan-student-unlimited-membership": {"label": "Student Unlimited Membership", "amountCents": 7900, "recurring": true}};</script>
+<dialog class="checkout-modal" data-checkout-modal aria-labelledby="checkout-modal-title">
+  <div class="checkout-modal__inner">
+    <button type="button" class="checkout-modal__close btn btn--sm btn--secondary" data-checkout-close autofocus aria-label="Close">Close &#10005;</button>
+    <h2 id="checkout-modal-title" data-checkout-title></h2>
+    <p class="plan-card__price" data-checkout-price></p>
+    <form data-checkout-form novalidate>
+      <div class="form-field">
+        <label for="checkout-email">Email <span class="text-muted">(for your receipt)</span></label>
+        <input type="email" id="checkout-email" name="email" data-checkout-email required autocomplete="email">
+      </div>
+      <div class="form-field">
+        <label id="checkout-card-label">Card details</label>
+        <div class="checkout-modal__card" id="checkout-card-container" data-checkout-card-container aria-labelledby="checkout-card-label"></div>
+      </div>
+      <p class="checkout-modal__status" data-checkout-status role="status" aria-live="polite"></p>
+      <button type="submit" class="btn btn--primary btn--block" data-checkout-submit>Pay</button>
+    </form>
+  </div>
+</dialog>
 
 </main>
 
@@ -200,5 +221,6 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
 </body>
 </html>

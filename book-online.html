@@ -55,11 +55,13 @@
 </section>
 <section class="section">
   <div class="container container--narrow">
-    <div class="notice">The original site used Wix's built-in booking &amp; checkout system, which can't move to a new server. Pick a booking/scheduling provider (e.g. Momence, Mindbody, Vagaro, Acuity Scheduling) and embed its calendar widget here &mdash; this section is a placeholder for that embed.</div>
-    <div class="card mt-6" style="align-items:center; text-align:center;">
-      <div class="img-placeholder" role="img" aria-label="Placeholder: Booking calendar embed goes here" style="aspect-ratio:16/9; border-radius:var(--radius-md);"><span>📷 Booking calendar embed goes here<br><small>Replace with real photo</small></span></div>
-      <p class="text-muted">Filter by class type or instructor once your booking provider is connected.</p>
-      <a class="btn btn--primary" href="pricing.html">See Membership Plans</a>
+    <div data-booking-embed>
+      <div class="notice">Set SQUARE_BOOKING_URL (your Square Appointments booking-site link — Square Dashboard &rarr; Appointments &rarr; Online Booking) and this embeds live scheduling automatically, no rebuild needed — see README. Until it's set, this stays a placeholder.</div>
+      <div class="card mt-6" style="align-items:center; text-align:center;">
+        <div class="img-placeholder" role="img" aria-label="Placeholder: Booking calendar embed goes here" style="aspect-ratio:16/9; border-radius:var(--radius-md);"><span>📷 Booking calendar embed goes here<br><small>Replace with real photo</small></span></div>
+        <p class="text-muted">Filter by class type or instructor once your booking provider is connected.</p>
+        <a class="btn btn--primary" href="pricing.html">See Membership Plans</a>
+      </div>
     </div>
     <div class="membership-nudge">
         <p>Coming back for more? <strong>Save with a membership</strong> — plans start at $69/mo, or try a full week unlimited for $40.</p>
@@ -111,5 +113,6 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/checkout.js"></script>
 </body>
 </html>
