@@ -43,11 +43,15 @@ ICON_INSTAGRAM = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" st
 ICON_FACEBOOK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>'
 
 
-def placeholder(label, ratio="16/10", radius="var(--radius-md)"):
+def placeholder(label, ratio="16/10", radius="var(--radius-md)", path_hint=None):
+    """`path_hint` (a rel_path_no_ext, e.g. "images/classes/vinyasa") shows
+    the exact file path/name that'll get picked up automatically — see
+    image_or_placeholder() below, which is what actually passes this in."""
+    hint = f"assets/{path_hint}.jpg (.png/.webp also work)" if path_hint else "Replace with real photo"
     return (
         f'<div class="img-placeholder" role="img" aria-label="Placeholder: {label}" '
         f'style="aspect-ratio:{ratio}; border-radius:{radius};">'
-        f'<span>📷 {label}<br><small>Replace with real photo</small></span></div>'
+        f'<span>📷 {label}<br><small>{hint}</small></span></div>'
     )
 
 
@@ -72,7 +76,7 @@ def image_or_placeholder(label, rel_path_no_ext, ratio="16/10", radius="var(--ra
     parent's width instead (for content-width photos)."""
     src = image_path_or_none(rel_path_no_ext)
     if not src:
-        return placeholder(label, ratio=ratio, radius=radius)
+        return placeholder(label, ratio=ratio, radius=radius, path_hint=rel_path_no_ext)
     size_style = f"width:{size}px; height:{size}px;" if size else "width:100%;"
     return (
         f'<img src="{src}" alt="{label}" loading="lazy" '

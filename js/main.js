@@ -255,7 +255,7 @@
           data.name +
           '" style="aspect-ratio:1/1; border-radius:50%;"><span>📷 ' +
           data.name +
-          "<br><small>Replace with real photo</small></span></div>";
+          "<br><small>" + data.photoPathHint + " (.png/.webp also work)</small></span></div>";
       modalName.textContent = data.name;
       modalRole.textContent = data.role;
       modalBio.textContent = data.bio;

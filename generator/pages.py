@@ -39,7 +39,7 @@ home_body = f"""
       <a class="btn btn--primary" href="book-online.html">Book a Class — $30</a>
       <a class="btn btn--secondary" href="pricing.html">View Membership Plans</a>
     </div>
-    <div class="hero__image">{placeholder("Hero photo — studio interior / class in session", ratio="16/7", radius="var(--radius-lg)")}</div>
+    <div class="hero__image">{image_or_placeholder("Hero photo — studio interior / class in session", "images/home/hero", ratio="16/7", radius="var(--radius-lg)")}</div>
   </div>
 </section>
 
@@ -61,7 +61,7 @@ home_body = f"""
     </div>
     <div class="grid grid--4">
       {"".join(f'''<article class="card class-card">
-        {placeholder(name, ratio="4/3")}
+        {image_or_placeholder(name, "images/classes/" + slugify(name), ratio="4/3")}
         <div class="class-card__head">
           <h3 title="{name}">{name}</h3>
           <p class="class-card__meta">{meta}</p>
@@ -83,7 +83,7 @@ home_body = f"""
         <p class="text-muted"><strong>Members save up to 67% per class</strong> compared to drop-in pricing.</p>
         <a class="btn btn--primary mt-5" href="pricing.html">Explore Plans &amp; Pricing</a>
       </div>
-      <div>{placeholder("Members practicing together", ratio="4/3")}</div>
+      <div>{image_or_placeholder("Members practicing together", "images/home/membership", ratio="4/3")}</div>
     </div>
   </div>
 </section>
@@ -103,7 +103,7 @@ home_body = f"""
         </ul>
         <div class="mt-5">{NOTICE.format("Studio hours weren't published on the live site — add them here.")}</div>
       </div>
-      <div>{placeholder("Map or studio storefront photo", ratio="4/3")}</div>
+      <div>{image_or_placeholder("Map or studio storefront photo", "images/studio/storefront", ratio="4/3")}</div>
     </div>
   </div>
 </section>
@@ -181,7 +181,7 @@ classes_body = f"""
     <h2 class="visually-hidden">All classes</h2>
     <div class="grid grid--3 mt-6">
       {"".join(f'''<article class="card class-card" data-category="{category}">
-        {placeholder(name, ratio="4/3")}
+        {image_or_placeholder(name, "images/classes/" + slugify(name), ratio="4/3")}
         <div class="class-card__head">
           <h3 title="{name}">{name}</h3>
           <p class="class-card__meta">{price}</p>
@@ -300,6 +300,7 @@ instructor_modal_data = [
         "specialties": i["specialties"],
         "slots": [{"day": d, "time": t, "className": c} for d, t, c in i["slots"]],
         "photo": image_path_or_none("images/instructors/" + slugify(i["name"])),
+        "photoPathHint": "assets/images/instructors/" + slugify(i["name"]) + ".jpg",
     }
     for i in INSTRUCTORS
 ]
@@ -556,7 +557,7 @@ events_body = f"""
     <h2 class="visually-hidden">Upcoming workshops &amp; events</h2>
     <div class="grid grid--3 mt-6">
       {"".join(f'''<article class="card class-card">
-        {placeholder(name, ratio="4/3")}
+        {image_or_placeholder(name, "images/events/" + slugify(name), ratio="4/3")}
         <div class="class-card__head">
           <h3 title="{name}">{name}</h3>
           <p class="class-card__meta">{price}</p>
@@ -593,7 +594,7 @@ free_body = f"""
 <section class="section">
   <div class="container container--narrow">
     <div class="card">
-      {placeholder("New Moon Sound Bath", ratio="16/9")}
+      {image_or_placeholder("New Moon Sound Bath", "images/events/" + slugify("New Moon Sound Bath"), ratio="16/9")}
       <h2>New Moon Sound Bath</h2>
       <p class="text-muted">A sound healing session. Members can reserve through the booking calendar.</p>
       <a class="btn btn--primary" href="book-online.html">Reserve Your Spot</a>
@@ -628,7 +629,7 @@ wws_body = f"""
     <h2 class="visually-hidden">Upcoming sessions</h2>
     <div class="grid grid--3">
       {"".join(f'''<article class="card class-card">
-        {placeholder(name, ratio="4/3")}
+        {image_or_placeholder(name, "images/events/" + slugify(name), ratio="4/3")}
         <div class="class-card__head">
           <h3 title="{name}">{name}</h3>
           <p class="class-card__meta">$35</p>
@@ -702,7 +703,7 @@ partnership_workshops_body = f"""
   <div class="container container--narrow">
     <h2 class="visually-hidden">Featured partner workshop</h2>
     <div class="card">
-      {placeholder("WWS Drop In: Creative Reset", ratio="16/9")}
+      {image_or_placeholder("WWS Drop In: Creative Reset", "images/events/" + slugify("WWS Drop In: Creative Reset"), ratio="16/9")}
       <h3>WWS Drop In: Creative Reset</h3>
       <p class="class-card__meta">$35</p>
       <a class="btn btn--primary" href="book-online.html" aria-label="Book WWS Drop In: Creative Reset">Book Now</a>
@@ -738,7 +739,7 @@ partners_body = f"""
     <h2 class="visually-hidden">Our partner businesses</h2>
     <div class="grid grid--2">
       {"".join(f'''<article class="card">
-        {placeholder(name, ratio="16/9")}
+        {image_or_placeholder(name, "images/partners/" + slugify(name), ratio="16/9")}
         <h3>{name}</h3>
         <p class="text-muted">{desc}</p>
         <p>{f'<a href="mailto:{email}">{email}</a> &middot; ' if email else ""}<a href="https://{site}" target="_blank" rel="noopener">{site}</a></p>
@@ -768,7 +769,7 @@ rent_body = f"""
     <h1>Celebrate life's defining moments</h1>
     <p class="lead">Host a stress-free micro-wedding, baby shower, birthday party, bridal shower, or other celebration in downtown Garland, TX. The space has a charming look, so you don't have to decorate much.</p>
     <div class="hero__actions"><a class="btn btn--primary" href="contact.html">Inquire About Renting</a></div>
-    <div class="hero__image">{placeholder("Event space photo — set up for a private event", ratio="16/7")}</div>
+    <div class="hero__image">{image_or_placeholder("Event space photo — set up for a private event", "images/studio/rent-the-space", ratio="16/7")}</div>
   </div>
 </section>
 <section class="section">
