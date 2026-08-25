@@ -51,6 +51,35 @@ def placeholder(label, ratio="16/10", radius="var(--radius-md)"):
     )
 
 
+def image_path_or_none(rel_path_no_ext, extensions=("jpg", "jpeg", "png", "webp")):
+    """Looks for assets/<rel_path_no_ext>.<ext> on disk, in that extension
+    order, and returns the relative path if found, else None. Lets photos
+    be added one at a time — drop a correctly-named file into assets/ and
+    regenerate, no code change needed — rather than requiring every image
+    to land before any of them can go live."""
+    for ext in extensions:
+        rel = f"{rel_path_no_ext}.{ext}"
+        if os.path.exists(os.path.join(ROOT, "assets", rel)):
+            return f"assets/{rel}"
+    return None
+
+
+def image_or_placeholder(label, rel_path_no_ext, ratio="16/10", radius="var(--radius-md)", size=None):
+    """Drop-in replacement for placeholder() that renders a real <img> if
+    a matching file exists in assets/ (see image_path_or_none), falling
+    back to the dashed placeholder box otherwise. `size` sets a fixed
+    width/height in px (for fixed-size avatars); omit it to fill the
+    parent's width instead (for content-width photos)."""
+    src = image_path_or_none(rel_path_no_ext)
+    if not src:
+        return placeholder(label, ratio=ratio, radius=radius)
+    size_style = f"width:{size}px; height:{size}px;" if size else "width:100%;"
+    return (
+        f'<img src="{src}" alt="{label}" loading="lazy" '
+        f'style="{size_style} aspect-ratio:{ratio}; border-radius:{radius}; object-fit:cover; display:block;">'
+    )
+
+
 def checkout_modal_markup(items):
     """Shared Square checkout dialog — append this to the body of any page
     with a [data-checkout-item] trigger button (see js/checkout.js). Only

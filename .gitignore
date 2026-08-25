@@ -3,6 +3,10 @@ __pycache__/
 .DS_Store
 node_modules/
 .vercel/
+# Full-resolution originals of uploaded photos — kept locally as a backup,
+# never committed (the web-sized/compressed versions next to this folder
+# are the ones actually served).
+assets/images/**/_originals/
 .env
 .env.local
 .env*.local

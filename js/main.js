@@ -244,12 +244,18 @@
     var openInstructorModal = function (data, trigger) {
       lastInstructorTrigger = trigger;
 
-      modalPhoto.innerHTML =
-        '<div class="img-placeholder" role="img" aria-label="Placeholder: ' +
-        data.name +
-        '" style="aspect-ratio:1/1; border-radius:50%;"><span>📷 ' +
-        data.name +
-        "<br><small>Replace with real photo</small></span></div>";
+      // data.photo is set at generate time (generator/pages.py) only if a
+      // matching file already exists in assets/images/instructors/ —
+      // falls back to the same placeholder box used everywhere else on
+      // the site until a photo's actually there.
+      modalPhoto.innerHTML = data.photo
+        ? '<img src="' + data.photo + '" alt="' + data.name + '" loading="lazy" ' +
+          'style="width:160px; height:160px; border-radius:50%; object-fit:cover; display:block;">'
+        : '<div class="img-placeholder" role="img" aria-label="Placeholder: ' +
+          data.name +
+          '" style="aspect-ratio:1/1; border-radius:50%;"><span>📷 ' +
+          data.name +
+          "<br><small>Replace with real photo</small></span></div>";
       modalName.textContent = data.name;
       modalRole.textContent = data.role;
       modalBio.textContent = data.bio;

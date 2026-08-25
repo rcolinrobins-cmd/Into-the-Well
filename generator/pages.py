@@ -2,7 +2,7 @@
 import json
 from build_site import (
     write, placeholder, slugify, price_to_cents, write_checkout_items,
-    checkout_modal_markup,
+    checkout_modal_markup, image_or_placeholder, image_path_or_none,
     ICON_CHEVRON, ICON_PIN, ICON_PHONE, ICON_MAIL,
     PHONE, PHONE_TEL, EMAIL, ADDRESS, MAPS_URL, TAGLINE,
 )
@@ -299,6 +299,7 @@ instructor_modal_data = [
         "bio": i["bio_full"],
         "specialties": i["specialties"],
         "slots": [{"day": d, "time": t, "className": c} for d, t, c in i["slots"]],
+        "photo": image_path_or_none("images/instructors/" + slugify(i["name"])),
     }
     for i in INSTRUCTORS
 ]
@@ -317,7 +318,7 @@ instructors_body = f"""
     <h2 class="visually-hidden">Meet the team</h2>
     <div class="grid grid--3 mt-6">
       {"".join(f'''<article class="card instructor-card">
-        {placeholder(i["name"], ratio="1/1")}
+        {image_or_placeholder(i["name"], "images/instructors/" + slugify(i["name"]), ratio="1/1", radius="50%", size=128)}
         <h3>{i["name"]}</h3>
         <p class="badge">{i["role"]}</p>
         <p class="instructor-card__bio">{i["bio_full"]}</p>
